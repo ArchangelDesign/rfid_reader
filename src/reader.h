@@ -5,9 +5,23 @@
 #include <arduino-timer.h>
 
 #include "buzzer.h"
+#include "network.h"
 
+#ifndef SS_PIN
 #define SS_PIN    21
+#endif
+#ifndef RST_PIN
 #define RST_PIN   22
+#endif
+#ifndef MISO_PIN
+#define MISO_PIN 19
+#endif
+#ifndef MOSI_PIN
+#define MOSI_PIN 23
+#endif
+#ifndef CLK_PIN
+#define CLK_PIN 18
+#endif
 #define CYCLES_BEFORE_RESET 2
 
 MFRC522::MIFARE_Key key = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
@@ -28,7 +42,7 @@ bool reader_reset(void *)
 }
 
 void initializeReader() {
-    SPI.begin();
+    SPI.begin(CLK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
     mfrc522.PCD_Init();
     reader_timer.every(1000, reader_reset);
 }
@@ -59,5 +73,21 @@ void processReader()
     memcpy(cardId, mfrc522.uid.uidByte, 4);
     reset_cycles = 0;
     Serial.printf("Card ID: %x:%x:%x:%x\n", cardId[0], cardId[1], cardId[2], cardId[3]);
-    buzzer_1_beep();
+    buzzer_beep(1);
+    uint8_t result = tap_in(cardId);
+    switch (result) {
+      case ACTION_OK:
+        buzzer_beep(2);
+      break;
+      case ERR_INVALID_UID:
+        buzzer_long_beeps(3);
+        break;
+      case ERR_ALREADY_TAPPED_IN:
+      case ERR_ALREADY_TAPPED_OUT:
+        buzzer_long_beeps(1);
+        break;
+      case ERR_SERVER_ERROR:
+        buzzer_long_beeps(4);
+    }
+    Serial.printf("result: %d\n", result);
 }
