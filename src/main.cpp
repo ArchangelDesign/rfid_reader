@@ -1,7 +1,11 @@
 #include <Arduino.h>
+#include "status.h"
 #include "reader.h"
 #include "screen.h"
-#include "status.h"
+#if BT_ENABLED
+#include "bluetooth.h"
+#endif
+
 
 void setup() {
   init_buzzer();
@@ -12,6 +16,10 @@ void setup() {
   initialize_network();
   log_d("initializing reader...");
   initializeReader();
+  #if BT_ENABLED
+  log_d("initializing bluetooth...");
+  initialize_blueetooth();
+  #endif
   log_d("initialization done.");
 }
 
@@ -19,4 +27,7 @@ void loop() {
   processReader();
   process_network();
   refresh_screen();
+  #if BT_ENABLED
+  bt_process();
+  #endif
 }

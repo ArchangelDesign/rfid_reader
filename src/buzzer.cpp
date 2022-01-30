@@ -1,7 +1,4 @@
-#pragma once
-#include <Arduino.h>
-
-#define BUZZER_PIN 15
+#include "buzzer.h"
 
 void buzzer_1_beep()
 {

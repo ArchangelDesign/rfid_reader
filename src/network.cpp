@@ -1,29 +1,5 @@
-#include <WiFi.h>
-// #include <HTTPClient.h>
-#include <ArduinoHttpClient.h>
-#include <arduino-timer.h>
-
-const char* ssid = "";
-const char* password = "";
-const char* server_address = "192.168.0.190";
-const int server_port = 80;
-
-#define RES_BUFFER_SIZE 8
-#define REQ_BUFFER_SIZE 120
-
-#define ERR_NO_CONNECTION 9
-#define ACTION_OK 0
-#define ERR_INVALID_UID 1
-#define ERR_ALREADY_TAPPED_IN 2
-#define ERR_ALREADY_TAPPED_OUT 3
-#define ERR_SERVER_ERROR 4
-
-#define NET_STATUS_OK 3
-#define NET_STATUS_INVALID_SSID 1
-#define NET_STATUS_DISCONNECTED 6
-#define NET_STATUS_CONN_LOST 5
-#define NET_STATUS_FAILED 4 
-#define NET_STATUS_IDLE 0
+#include "network.h"
+#include "buzzer.h"
 
 uint8_t network_status = NET_STATUS_IDLE;
 uint8_t disconnected_seconds = 0;
