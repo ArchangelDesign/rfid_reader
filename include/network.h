@@ -28,7 +28,9 @@
 
 char* get_network_status_string();
 uint8_t tap_in(byte uid[]);
+uint8_t tap_out(byte uid[]);
 void initialize_network();
 bool network_status_callback(void *);
 bool is_connected();
 void process_network();
+int post_to_endpoint(const char* url, byte uid[]);

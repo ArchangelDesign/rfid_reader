@@ -67,7 +67,13 @@ void processReader()
     refresh_screen();
     bt_log(buf);
     buzzer_beep(1);
-    uint8_t result = tap_in(cardId);
+    uint8_t result = 90;
+    if (current_mode == gt_tap_in) {
+      result = tap_in(cardId);
+    }
+    if (current_mode == gt_tap_out) {
+      result = tap_out(cardId);
+    }
     switch (result) {
       case ACTION_OK:
         bt_log("OK");
@@ -93,6 +99,19 @@ void processReader()
         refresh_screen();
         bt_log("SERVER ERROR");
         buzzer_long_beeps(2);
+        break;
+      case ERR_NO_CONNECTION:
+        sprintf(last_error, "%s", "NO NET");
+        refresh_screen();
+        bt_log("NO CONNECTION");
+        buzzer_long_beeps(3);
+        break;
+      default:
+        sprintf(last_error, "%s", "ERROR");
+        refresh_screen();
+        bt_log("INVALID CODE RETURNED FROM THE SERVER");
+        buzzer_long_beeps(3);
+        break;
     }
 }
 

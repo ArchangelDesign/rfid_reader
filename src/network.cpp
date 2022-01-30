@@ -58,34 +58,41 @@ void initialize_network() {
 uint8_t tap_in(byte uid[]) {
   
     if (!is_connected()) {
-        log_e("cannot verify UID without network connection.");
-        buzzer_long_beeps(10);
         return ERR_NO_CONNECTION;
     }
-    client.beginRequest();
-    client.setTimeout(5000);
-    memset(request_body_buffer, 0, REQ_BUFFER_SIZE);
-    sprintf(request_body_buffer, "%x:%x:%x:%x", uid[0], uid[1], uid[2], uid[3]);
-
-    log_d("posting: %s", request_body_buffer);
-    client.post("/tap-in.php", "text/plain", request_body_buffer);
-    
-    client.endRequest();
-    int response_code = client.responseStatusCode();
+    int response_code = post_to_endpoint("/tap-in.php", uid);
     log_d("response code: %d", response_code);
     if (response_code != 200) {
         return ERR_SERVER_ERROR;
     }
-    // client.responseBody().getBytes(response_body_buffer, client.responseBody().length());
     memset(response_body_buffer, 0, RES_BUFFER_SIZE);
     strcpy(response_body_buffer, client.responseBody().c_str());
-    for (int i = 0; i < RES_BUFFER_SIZE; i++) {
-        Serial.print(response_body_buffer[i]);
+    return response_body_buffer[0];;
+}
+
+uint8_t tap_out(byte uid[]) {
+    if (!is_connected()) {
+        return ERR_NO_CONNECTION;
     }
-    Serial.println();
-    uint8_t first_byte = response_body_buffer[0];
-    Serial.println(first_byte);
-    return first_byte;
+    int response_code = post_to_endpoint("/tap-out.php", uid);
+    log_d("response code: %d", response_code);
+    if (response_code != 200) {
+        return ERR_SERVER_ERROR;
+    }
+    memset(response_body_buffer, 0, RES_BUFFER_SIZE);
+    strcpy(response_body_buffer, client.responseBody().c_str());
+    return response_body_buffer[0];
+}
+
+int post_to_endpoint(const char* url, byte uid[]) {
+    client.beginRequest();
+    client.setTimeout(5000);
+    memset(request_body_buffer, 0, REQ_BUFFER_SIZE);
+    sprintf(request_body_buffer, "%x:%x:%x:%x", uid[0], uid[1], uid[2], uid[3]);
+    log_d("posting %s to %s", request_body_buffer, url);
+    client.post(url, "text/plain", request_body_buffer);
+    client.endRequest();
+    return client.responseStatusCode();
 }
 
 void process_network()

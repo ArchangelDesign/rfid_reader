@@ -7,6 +7,10 @@
 #define BT_BUFFER_SIZE 120
 #endif
 
+#ifndef BT_DEVICE_NAME
+#define BT_DEVICE_NAME "GT RFID SCANNER"
+#endif
+
 extern BluetoothSerial SerialBT;
 
 void initialize_blueetooth();
