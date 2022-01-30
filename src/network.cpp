@@ -60,7 +60,7 @@ uint8_t tap_in(byte uid[]) {
     if (!is_connected()) {
         return ERR_NO_CONNECTION;
     }
-    int response_code = post_to_endpoint("/tap-in.php", uid);
+    int response_code = post_to_endpoint(STRINGIFY(URL_TAP_IN), uid);
     log_d("response code: %d", response_code);
     if (response_code != 200) {
         return ERR_SERVER_ERROR;
@@ -74,7 +74,7 @@ uint8_t tap_out(byte uid[]) {
     if (!is_connected()) {
         return ERR_NO_CONNECTION;
     }
-    int response_code = post_to_endpoint("/tap-out.php", uid);
+    int response_code = post_to_endpoint(STRINGIFY(URL_TAP_OUT), uid);
     log_d("response code: %d", response_code);
     if (response_code != 200) {
         return ERR_SERVER_ERROR;
