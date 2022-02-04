@@ -1,5 +1,6 @@
 #include "network.h"
 #include "buzzer.h"
+#include "status.h"
 
 uint8_t network_status = NET_STATUS_IDLE;
 uint8_t disconnected_seconds = 0;

@@ -10,6 +10,7 @@ Timer<1, millis> reader_timer;
 uint8_t reset_cycles = 0;
 gt_mode_t current_mode = gt_tap_in;
 char last_error[50];
+uint16_t scan_counter = 0;
 
 bool reader_reset(void *)
 {
@@ -113,6 +114,7 @@ void processReader()
         buzzer_long_beeps(3);
         break;
     }
+    scan_counter++;
 }
 
 void set_mode_tap_in() {

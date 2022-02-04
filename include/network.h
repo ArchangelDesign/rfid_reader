@@ -26,9 +26,6 @@
 #define NET_STATUS_FAILED 4 
 #define NET_STATUS_IDLE 0
 
-#define STRINGIFY(s) STRINGIFY1(s)
-#define STRINGIFY1(s) #s
-
 char* get_network_status_string();
 uint8_t tap_in(byte uid[]);
 uint8_t tap_out(byte uid[]);

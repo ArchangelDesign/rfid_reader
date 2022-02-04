@@ -7,9 +7,10 @@ char bt_buffer[BT_BUFFER_SIZE] = {};
 
 void initialize_blueetooth() {
     log_d("staring BT serial...");
-    SerialBT.begin("GT RFID Scaner");
+    SerialBT.begin(STRINGIFY(BT_DEVICE_NAME));
     SerialBT.onAuthComplete(bt_auth_completed_callback);
     SerialBT.onData(bt_data_received);
+    SerialBT.onConfirmRequest(bt_request_confirmed);
 }
 
 void bt_process() {
@@ -18,6 +19,10 @@ void bt_process() {
 
 void bt_auth_completed_callback(boolean success) {
 
+}
+
+void bt_request_confirmed(uint32_t num_val) {
+    log_d("request %d", num_val);
 }
 
 void bt_data_received(const uint8_t *buffer, size_t size) {

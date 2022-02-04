@@ -1,11 +1,11 @@
 #include <Arduino.h>
 #include "status.h"
 #include "reader.h"
-#include "screen.h"
+
 #if BT_ENABLED
 #include "bluetooth.h"
 #endif
-
+#include "screen.h"
 
 void setup() {
   init_buzzer();
