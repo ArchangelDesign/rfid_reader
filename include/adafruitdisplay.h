@@ -7,6 +7,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET_PIN);
 void display_init() {
     Wire.begin(OLED_DTA_PIN, OLED_CLK_PIN);
     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+    display.clearDisplay();
+    display.display();
 }
 
 void display_clear() {
@@ -17,7 +19,7 @@ void display_flush() {
     display.display();
 }
 
-void display_print(int x, int y, char *text)
+void display_print(int x, int y, const char *text)
 {
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
