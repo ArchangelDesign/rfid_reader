@@ -9,7 +9,7 @@
 #define GT_VERSION "debug"
 #endif
 
-typedef enum gt_mode_t {
+enum gt_mode_t {
     gt_tap_in,
     gt_tap_out
 };

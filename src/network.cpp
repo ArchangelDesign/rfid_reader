@@ -15,6 +15,7 @@ HttpClient client = HttpClient(wifi, server_address, server_port);
 int8_t really_connected = 1;
 char ip_address[21] = "";
 char gt_ssid[GT_MEM_SIZE_SSID];
+char gt_pass[GT_MEM_SIZE_PASS];
 
 bool is_connected()
 {
@@ -56,11 +57,10 @@ void initialize_network() {
     buzzer_beep(1);
     memset(gt_ssid, 0, GT_MEM_SIZE_SSID);
     gt_mem_get_ssid(gt_ssid);
+    gt_mem_get_pass(gt_pass);
     log_d("SSID from EEPROM: %s", gt_ssid);
-    if (strlen(gt_ssid) > 0) {
-
-    }
-    WiFi.begin(ssid, password);
+    log_d("PASS from EEPROM: %s", gt_pass);
+    WiFi.begin((const char*)gt_ssid, gt_pass);
     network_timer.every(1000, network_status_callback);
 }
 
