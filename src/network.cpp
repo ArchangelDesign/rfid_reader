@@ -1,6 +1,7 @@
 #include "network.h"
 #include "buzzer.h"
 #include "status.h"
+#include "storage.h"
 
 uint8_t network_status = NET_STATUS_IDLE;
 uint8_t disconnected_seconds = 0;
@@ -13,6 +14,7 @@ WiFiClient wifi;
 HttpClient client = HttpClient(wifi, server_address, server_port);
 int8_t really_connected = 1;
 char ip_address[21] = "";
+char gt_ssid[GT_MEM_SIZE_SSID];
 
 bool is_connected()
 {
@@ -52,6 +54,12 @@ bool network_status_callback(void *) {
 
 void initialize_network() {
     buzzer_beep(1);
+    memset(gt_ssid, 0, GT_MEM_SIZE_SSID);
+    gt_mem_get_ssid(gt_ssid);
+    log_d("SSID from EEPROM: %s", gt_ssid);
+    if (strlen(gt_ssid) > 0) {
+
+    }
     WiFi.begin(ssid, password);
     network_timer.every(1000, network_status_callback);
 }

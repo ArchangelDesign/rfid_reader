@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "status.h"
+#include "storage.h"
 #include "reader.h"
 
 #if BT_ENABLED
@@ -10,6 +11,7 @@
 void setup() {
   init_buzzer();
   Serial.begin(9600);
+  initialize_eeprom();
   log_d("initializing screen...");
   init_display();
   log_d("initializing network...");

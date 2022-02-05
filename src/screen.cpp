@@ -1,3 +1,4 @@
+#include "storage.h"
 #include "screen.h"
 #include "network.h"
 #include "status.h"
@@ -15,6 +16,10 @@ void init_display() {
   log_d("Using Adafruit display driver");
   #endif
   display_init();
+  display_print_size(0, 0, 2, "GROWTIX");
+  display_print_size(0, 20, 2, STRINGIFY(GT_VERSION));
+  display_print_size(0, 40, 2, "BOOTING UP...");
+  display_flush();
 }
 
 bool refresh_screen() {

@@ -26,6 +26,8 @@
 #define NET_STATUS_FAILED 4 
 #define NET_STATUS_IDLE 0
 
+extern char gt_ssid[];
+
 char* get_network_status_string();
 uint8_t tap_in(byte uid[]);
 uint8_t tap_out(byte uid[]);

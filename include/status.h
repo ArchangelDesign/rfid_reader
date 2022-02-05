@@ -5,6 +5,10 @@
 #define STRINGIFY(s) STRINGIFY1(s)
 #define STRINGIFY1(s) #s
 
+#ifndef GT_VERSION
+#define GT_VERSION "debug"
+#endif
+
 typedef enum gt_mode_t {
     gt_tap_in,
     gt_tap_out
