@@ -2,10 +2,7 @@
 #include "status.h"
 #include "storage.h"
 #include "reader.h"
-
-#if BT_ENABLED
 #include "bluetooth.h"
-#endif
 #include "screen.h"
 
 void setup() {
@@ -35,13 +32,13 @@ void setup() {
   sleep(1);
   initialize_blueetooth();
   log_d("initialization done.");
+  display_clear();
+  display_flush();
 }
 
 void loop() {
   processReader();
   process_network();
   refresh_screen();
-  #if BT_ENABLED
   bt_process();
-  #endif
 }

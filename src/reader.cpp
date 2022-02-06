@@ -50,10 +50,8 @@ bool newCardDetected() {
 }
 
 void bt_log(char * buf) {
-  #if BT_ENABLED
   bt_send(buf);
   bt_send("\n");
-  #endif
 }
 
 void processReader()
