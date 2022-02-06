@@ -35,3 +35,12 @@ void gt_mem_set_pass(char *new_pass) {
     EEPROM.writeString(GT_MEM_ADDR_PASS, new_pass);
     EEPROM.commit();
 }
+
+uint32_t gt_mem_get_cntr() {
+    return EEPROM.readLong(GT_MEM_ADDR_CNTR);
+}
+
+void gt_mem_set_cntr(uint32_t new_cntr) {
+    EEPROM.writeLong(GT_MEM_ADDR_CNTR, new_cntr);
+    EEPROM.commit();
+}

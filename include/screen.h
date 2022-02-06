@@ -21,3 +21,6 @@
 
 bool refresh_screen();
 void init_display();
+void display_flush();
+void display_print(int x, int y, const char *text);
+void display_print_size(int x, int y, int size, char *text);

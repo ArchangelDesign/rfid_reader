@@ -36,3 +36,4 @@ bool network_status_callback(void *);
 bool is_connected();
 void process_network();
 int post_to_endpoint(const char* url, byte uid[]);
+void gt_connect();

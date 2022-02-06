@@ -1,6 +1,7 @@
 #include "reader.h"
 #include "status.h"
 #include "screen.h"
+#include "storage.h"
 
 MFRC522::MIFARE_Key key = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 MFRC522::StatusCode status;
@@ -10,23 +11,24 @@ Timer<1, millis> reader_timer;
 uint8_t reset_cycles = 0;
 gt_mode_t current_mode = gt_tap_in;
 char last_error[50];
-uint16_t scan_counter = 0;
+uint32_t scan_counter;
 
 bool reader_reset(void *)
 {
-    if (reset_cycles > CYCLES_BEFORE_RESET) {
-        reset_cycles = 0;
-        memset(cardId, 0, 4);
-        memset(last_error, 0, 50);
-    }
-    reset_cycles++;
-    return true;
+  if (reset_cycles > CYCLES_BEFORE_RESET) {
+      reset_cycles = 0;
+      memset(cardId, 0, 4);
+      memset(last_error, 0, 50);
+  }
+  reset_cycles++;
+  return true;
 }
 
 void initializeReader() {
-    SPI.begin(CLK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
-    mfrc522.PCD_Init();
-    reader_timer.every(1000, reader_reset);
+  scan_counter = gt_mem_get_cntr();
+  SPI.begin(CLK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
+  mfrc522.PCD_Init();
+  reader_timer.every(1000, reader_reset);
 }
 
 bool newCardDetected() {
@@ -115,6 +117,7 @@ void processReader()
         break;
     }
     scan_counter++;
+    gt_mem_set_cntr(scan_counter);
 }
 
 void set_mode_tap_in() {

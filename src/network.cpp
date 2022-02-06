@@ -40,7 +40,7 @@ bool network_status_callback(void *) {
         buzzer_beep(5);
         Serial.println("trying to reconnect...");
         disconnected_seconds = 0;
-        WiFi.begin(ssid, password);
+        gt_connect();
     }
     if (is_connected()) {
         really_connected = 1;
@@ -54,14 +54,19 @@ bool network_status_callback(void *) {
 }
 
 void initialize_network() {
-    buzzer_beep(1);
-    memset(gt_ssid, 0, GT_MEM_SIZE_SSID);
-    gt_mem_get_ssid(gt_ssid);
-    gt_mem_get_pass(gt_pass);
-    log_d("SSID from EEPROM: %s", gt_ssid);
-    log_d("PASS from EEPROM: %s", gt_pass);
-    WiFi.begin((const char*)gt_ssid, gt_pass);
+    gt_connect();
     network_timer.every(1000, network_status_callback);
+}
+
+void gt_connect() {
+  buzzer_beep(1);
+  memset(gt_ssid, 0, GT_MEM_SIZE_SSID);
+  gt_mem_get_ssid(gt_ssid);
+  memset(gt_pass, 0, GT_MEM_SIZE_PASS);
+  gt_mem_get_pass(gt_pass);
+  log_d("SSID from EEPROM: %s", gt_ssid);
+  log_d("PASS from EEPROM: %s", gt_pass);
+  WiFi.begin((const char*)gt_ssid, gt_pass);
 }
 
 uint8_t tap_in(byte uid[]) {
