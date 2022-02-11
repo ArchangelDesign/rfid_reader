@@ -3,17 +3,22 @@
 #include "storage.h"
 #include "buzzer.h"
 
+
+
 BluetoothSerial SerialBT;
 byte single_byte_buffer;
 char bt_buffer[BT_BUFFER_SIZE] = {};
 bt_state_t bt_current_state = gt_state_normal;
 
 void initialize_blueetooth() {
-    log_d("staring BT serial...");
+    log_d("starting BT serial...");
     SerialBT.begin(STRINGIFY(BT_DEVICE_NAME));
     SerialBT.onAuthComplete(bt_auth_completed_callback);
     SerialBT.onData(bt_data_received);
     SerialBT.onConfirmRequest(bt_request_confirmed);
+    SerialBT.register_callback(bt_callback);
+    esp_bt_gap_register_callback(bt_gap_callback);
+    buzzer_beep(1);
 }
 
 void bt_process() {
@@ -26,6 +31,20 @@ void bt_auth_completed_callback(boolean success) {
 
 void bt_request_confirmed(uint32_t num_val) {
     log_d("request %d", num_val);
+}
+
+void bt_callback (esp_spp_cb_event_t event, esp_spp_cb_param_t *param) {
+    log_d("BT Event: %d", event);
+    if (event == ESP_SPP_SRV_OPEN_EVT) {
+        buzzer_beep(3);
+    }
+    if (event == ESP_SPP_CLOSE_EVT) {
+        buzzer_beep(1);
+    }
+}
+
+void bt_gap_callback(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
+    log_d("BT GAP Event: %d", event);
 }
 
 void bt_data_received(const uint8_t *buffer, size_t size) {

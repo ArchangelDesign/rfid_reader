@@ -27,7 +27,7 @@ void display_print(int x, int y, const char *text)
   display.print(text);
 }
 
-void display_print_size(int x, int y, int size, char *text)
+void display_print_size(int x, int y, int size, const char *text)
 {
   display.setTextSize(size);
   display.setTextColor(SSD1306_WHITE);

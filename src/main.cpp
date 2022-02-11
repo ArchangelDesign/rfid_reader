@@ -4,8 +4,15 @@
 #include "reader.h"
 #include "bluetooth.h"
 #include "screen.h"
+#include "ADBuzzer.h"
 
+ADBuzzer ad_buzzer(BUZZER_PIN);
+
+// c1 = 8717 2/6/22
+// c2 = 21034 2/7/22   12317 scans
+// c3 = 32853 2/9/22   11819 scans
 void setup() {
+
   init_buzzer();
   Serial.begin(9600);
   initialize_eeprom();

@@ -46,7 +46,7 @@ bool network_status_callback(void *) {
         really_connected = 1;
         client.setTimeout(1000);
         client.beginRequest();
-        int res = client.get("/tap-in.php");
+        int res = client.get(STRINGIFY(URL_TAP_IN));
         client.endRequest();
         really_connected = res;
     }

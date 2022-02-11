@@ -6,9 +6,7 @@
 
 #include "buzzer.h"
 #include "network.h"
-#if BT_ENABLED
 #include "bluetooth.h"
-#endif
 
 #ifndef SS_PIN
 #define SS_PIN    21
