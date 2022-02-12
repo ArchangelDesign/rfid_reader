@@ -9,13 +9,16 @@ char response_body_buffer[RES_BUFFER_SIZE] = {};
 char request_body_buffer[REQ_BUFFER_SIZE] = {};
 
 Timer<3, millis> network_timer;
+uint8_t watchdog_timer = 0;
 
 WiFiClient wifi;
 HttpClient client = HttpClient(wifi, server_address, server_port);
-int8_t really_connected = 1;
+
+bool really_connected = false;
 char ip_address[21] = "";
 char gt_ssid[GT_MEM_SIZE_SSID];
 char gt_pass[GT_MEM_SIZE_PASS];
+bool busy = false;
 
 bool is_connected()
 {
@@ -34,7 +37,7 @@ bool network_status_callback(void *) {
     }
     if (!is_connected()) {
         disconnected_seconds++;
-        really_connected = 128;
+        really_connected = false;
     }
     if (disconnected_seconds > 10) {
         ad_buzzer.beep(5);
@@ -42,14 +45,7 @@ bool network_status_callback(void *) {
         disconnected_seconds = 0;
         gt_connect();
     }
-    if (is_connected()) {
-        really_connected = 1;
-        client.setTimeout(1000);
-        client.beginRequest();
-        int res = client.get(STRINGIFY(URL_TAP_IN));
-        client.endRequest();
-        really_connected = res;
-    }
+    process_network_async();
     return true;
 }
 
@@ -79,8 +75,6 @@ uint8_t tap_in(byte uid[]) {
     if (response_code != 200) {
         return ERR_SERVER_ERROR;
     }
-    memset(response_body_buffer, 0, RES_BUFFER_SIZE);
-    strcpy(response_body_buffer, client.responseBody().c_str());
     return response_body_buffer[0];;
 }
 
@@ -93,20 +87,23 @@ uint8_t tap_out(byte uid[]) {
     if (response_code != 200) {
         return ERR_SERVER_ERROR;
     }
-    memset(response_body_buffer, 0, RES_BUFFER_SIZE);
-    strcpy(response_body_buffer, client.responseBody().c_str());
     return response_body_buffer[0];
 }
 
 int post_to_endpoint(const char* url, byte uid[]) {
+    busy = true;
     client.beginRequest();
-    client.setTimeout(5000);
+    client.setHttpResponseTimeout(8000);
     memset(request_body_buffer, 0, REQ_BUFFER_SIZE);
     sprintf(request_body_buffer, "%x:%x:%x:%x", uid[0], uid[1], uid[2], uid[3]);
     log_d("posting %s to %s", request_body_buffer, url);
     client.post(url, "text/plain", request_body_buffer);
     client.endRequest();
-    return client.responseStatusCode();
+    int responseCode = client.responseStatusCode();
+    memset(response_body_buffer, 0, RES_BUFFER_SIZE);
+    strcpy(response_body_buffer, client.responseBody().c_str());
+    busy = false;
+    return responseCode;
 }
 
 void process_network()
@@ -131,4 +128,23 @@ const char* get_network_status_string() {
     default:
       return "N/A";
   }
+}
+
+void process_network_async() {
+    if (watchdog_timer < 10) {
+        watchdog_timer++;
+        return;
+    }
+    watchdog_timer = 0;
+    if (is_connected()) {
+        HttpClient c = HttpClient(wifi, server_address, server_port);
+        c.setHttpResponseTimeout(2000);
+        c.beginRequest();
+        int res = c.get(STRINGIFY(URL_TAP_IN));
+        c.endRequest();
+        int code = c.responseStatusCode();
+        log_d("connection watchdog: %d res: %d", code, res);
+        really_connected = (res == 0) && (code == 200);
+        c.stop();
+    }
 }

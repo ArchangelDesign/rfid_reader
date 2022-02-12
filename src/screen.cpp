@@ -25,21 +25,16 @@ void init_display() {
 bool refresh_screen() {
   char buf[40] = "";
   display_clear();
+  if (really_connected) {
+    sprintf(buf, "%s", "ONLINE");
+  } else {
+    sprintf(buf, "%s", "OFFLINE");
+  }
+  display_print_size(1, 0, 2, buf);
   sprintf(buf, "SCANS: %d", scan_counter);
   display_print(1, 20, buf);
-  switch (really_connected) {
-    case 0:
-      sprintf(buf, "%s", "ONLINE");
-      break;
-    case 1:
-      sprintf(buf, "%s", "- - - - -");
-      break;
-    default:
-      sprintf(buf, "%s", "OFFLINE");
-  }
   // display_print(1, 30, ip_address);
   display_print(1, 30, STRINGIFY(BT_DEVICE_NAME));
-  display_print_size(1,1, 2, buf);
   if (current_mode == gt_tap_in) {
     sprintf(buf, "%s", "TAP IN");
   } else {

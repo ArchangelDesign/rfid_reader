@@ -18,6 +18,14 @@ void process_buzzer(void *params) {
   vTaskDelete(NULL);
 }
 
+void process_network(void *params) {
+  delay(48);
+  while (true) {
+    process_network_async();
+    delay(100);
+  }
+}
+
 // c1 = 8717 2/6/22
 // c2 = 21034 2/7/22   12317 scans
 // c3 = 32853 2/9/22   11819 scans
@@ -52,6 +60,7 @@ void setup() {
   log_d("initialization done.");
   display_clear();
   display_flush();
+  // xTaskCreate(process_network, "network_loop", 2048, NULL, 1, NULL);
 }
 
 void loop() {

@@ -37,3 +37,4 @@ bool is_connected();
 void process_network();
 int post_to_endpoint(const char* url, byte uid[]);
 void gt_connect();
+void process_network_async();

@@ -15,7 +15,7 @@ enum gt_mode_t {
 };
 
 extern uint8_t network_status;
-extern int8_t really_connected;
+extern bool really_connected;
 extern char ip_address[21];
 extern gt_mode_t current_mode;
 extern char last_error[50];

@@ -99,7 +99,7 @@ void processReader()
         sprintf(last_error, "%s", "SERVER FAILURE");
         refresh_screen();
         bt_log("SERVER ERROR");
-        ad_buzzer.longBeep(2);
+        ad_buzzer.longBeep(3);
         break;
       case ERR_NO_CONNECTION:
         sprintf(last_error, "%s", "NO NET");
