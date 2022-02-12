@@ -28,7 +28,7 @@ void bt_auth_completed_callback(boolean success);
 
 void bt_data_received(const uint8_t *buffer, size_t size);
 
-void bt_send(char * buf);
+void bt_send(const char * buf);
 
 void bt_request_confirmed(uint32_t num_val);
 

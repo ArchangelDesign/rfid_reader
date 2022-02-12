@@ -28,7 +28,7 @@
 
 extern char gt_ssid[];
 
-char* get_network_status_string();
+const char* get_network_status_string();
 uint8_t tap_in(byte uid[]);
 uint8_t tap_out(byte uid[]);
 void initialize_network();

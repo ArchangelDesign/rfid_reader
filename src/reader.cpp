@@ -49,7 +49,7 @@ bool newCardDetected() {
   return true;
 }
 
-void bt_log(char * buf) {
+void bt_log(const char * buf) {
   bt_send(buf);
   bt_send("\n");
 }
@@ -66,8 +66,8 @@ void processReader()
     sprintf(buf, "Card ID: %x:%x:%x:%x", cardId[0], cardId[1], cardId[2], cardId[3]);
     sprintf(last_error, "%s", "BUSY");
     refresh_screen();
-    bt_log(buf);
-    buzzer_beep(1);
+    bt_log((const char*)buf);
+    ad_buzzer.beep(1);
     uint8_t result = 90;
     if (current_mode == gt_tap_in) {
       result = tap_in(cardId);
@@ -80,38 +80,38 @@ void processReader()
         bt_log("OK");
         sprintf(last_error, "%s", "OK");
         refresh_screen();
-        buzzer_beep(2);
+        ad_buzzer.beep(2);
       break;
       case ERR_INVALID_UID:
         bt_log("INVALID CARD");
         sprintf(last_error, "%s", "INVALID");
         refresh_screen();
-        buzzer_long_beeps(2);
+        ad_buzzer.longBeep(2);
         break;
       case ERR_ALREADY_TAPPED_IN:
       case ERR_ALREADY_TAPPED_OUT:
         bt_log("INVALID STATE");
         sprintf(last_error, "%s", "STATE");
         refresh_screen();
-        buzzer_long_beeps(1);
+        ad_buzzer.longBeep(1);
         break;
       case ERR_SERVER_ERROR:
         sprintf(last_error, "%s", "SERVER FAILURE");
         refresh_screen();
         bt_log("SERVER ERROR");
-        buzzer_long_beeps(2);
+        ad_buzzer.longBeep(2);
         break;
       case ERR_NO_CONNECTION:
         sprintf(last_error, "%s", "NO NET");
         refresh_screen();
         bt_log("NO CONNECTION");
-        buzzer_long_beeps(3);
+        ad_buzzer.longBeep(3);
         break;
       default:
         sprintf(last_error, "%s", "ERROR");
         refresh_screen();
         bt_log("INVALID CODE RETURNED FROM THE SERVER");
-        buzzer_long_beeps(3);
+        ad_buzzer.longBeep(3);
         break;
     }
     scan_counter++;

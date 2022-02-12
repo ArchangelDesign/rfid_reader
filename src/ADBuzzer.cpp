@@ -1,33 +1,44 @@
 #include "ADBuzzer.h"
 
-ADBuzzer *adBuzzerInstance = NULL;
-
-ADBuzzer::ADBuzzer(uint8_t pin, uint16_t signalLength, uint16_t pauseLength) {
+void ADBuzzer::begin(uint8_t pin, uint16_t signalLength, uint16_t pauseLength, uint16_t longSignalLength, uint16_t longPauseLength) {
     this->pin = pin;
     this->signalLength = signalLength;
     this->pauseLength = pauseLength;
+    this->longSignalLength = longSignalLength;
+    this->longPauseLength = longPauseLength;
     pinMode(this->pin, OUTPUT);
 }
 
-void ADBuzzer::beep() {
-    this->beepsToGo++;
+void ADBuzzer::beep(uint8_t times) {
+    this->beepsToGo += times;
 }
 
-void ADBuzzer::beepShort(uint8_t times) {
+void ADBuzzer::longBeep(uint8_t times) {
+    this->longBeepsToGo += times;
+}
+
+void ADBuzzer::beepShort() {
     digitalWrite(this->pin, HIGH);
     delay(this->signalLength);
     digitalWrite(this->pin, LOW);
     delay(this->pauseLength);
 }
 
-void ADBuzzer::beepShortAsync(uint8_t times) {
-    this->beepsToGo += times;
+void ADBuzzer::beepLong() {
+    digitalWrite(this->pin, HIGH);
+    delay(this->longSignalLength);
+    digitalWrite(this->pin, LOW);
+    delay(this->longPauseLength);
 }
 
 void ADBuzzer::loop() {
+    if (this->longBeepsToGo > 0) {
+        this->beepLong();
+        this->longBeepsToGo--;
+    }
     if (this->beepsToGo == 0) {
         return;
     }
-    this->beepShort(1);
+    this->beepShort();
     this->beepsToGo--;
 }

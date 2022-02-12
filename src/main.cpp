@@ -6,16 +6,27 @@
 #include "screen.h"
 #include "ADBuzzer.h"
 
-ADBuzzer ad_buzzer(BUZZER_PIN);
+ADBuzzer ad_buzzer;
+bool buzzer_process_running = true;
+
+void process_buzzer(void *params) {
+  delay(100);
+  while (buzzer_process_running) {
+    ad_buzzer.loop();
+    delay(10);
+  }
+  vTaskDelete(NULL);
+}
 
 // c1 = 8717 2/6/22
 // c2 = 21034 2/7/22   12317 scans
 // c3 = 32853 2/9/22   11819 scans
 void setup() {
-
-  init_buzzer();
+  ad_buzzer.begin(BUZZER_PIN);
+  xTaskCreate(process_buzzer, "buzzer_loop", 1024, NULL, 1, NULL);
   Serial.begin(9600);
   initialize_eeprom();
+  ad_buzzer.beep(2);
   sleep(1);
   log_d("initializing screen...");
   init_display();

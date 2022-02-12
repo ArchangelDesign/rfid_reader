@@ -29,7 +29,7 @@ bool network_status_callback(void *) {
         if (network_status == NET_STATUS_OK) {
             sprintf(ip_address, "%s", WiFi.localIP().toString().c_str());
             log_i("Connected to %s with IP address: %s", ssid,ip_address);
-            buzzer_beep(5);
+            ad_buzzer.beep(5);
         }
     }
     if (!is_connected()) {
@@ -37,7 +37,7 @@ bool network_status_callback(void *) {
         really_connected = 128;
     }
     if (disconnected_seconds > 10) {
-        buzzer_beep(5);
+        ad_buzzer.beep(5);
         Serial.println("trying to reconnect...");
         disconnected_seconds = 0;
         gt_connect();
@@ -59,7 +59,7 @@ void initialize_network() {
 }
 
 void gt_connect() {
-  buzzer_beep(1);
+  ad_buzzer.beep(1);
   memset(gt_ssid, 0, GT_MEM_SIZE_SSID);
   gt_mem_get_ssid(gt_ssid);
   memset(gt_pass, 0, GT_MEM_SIZE_PASS);
@@ -114,7 +114,7 @@ void process_network()
     network_timer.tick();
 }
 
-char* get_network_status_string() {
+const char* get_network_status_string() {
   switch (network_status) {
     case NET_STATUS_INVALID_SSID:
       return "INVALID";
@@ -128,5 +128,7 @@ char* get_network_status_string() {
       return "LOST";
     case NET_STATUS_OK:
       return "CONNECTED";
+    default:
+      return "N/A";
   }
 }
