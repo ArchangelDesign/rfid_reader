@@ -21,6 +21,7 @@ class GtStorage {
         uint8_t getFatType();
         void openRoot();
         bool writeInfo(const char *info);
+        void end();
     private:
     #ifdef AD_AVR
         Sd2Card card;

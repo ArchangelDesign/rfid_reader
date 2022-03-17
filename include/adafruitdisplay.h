@@ -2,7 +2,7 @@
 
 #include <Adafruit_SSD1306.h>
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET_PIN);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
 void display_init() {
     Wire.begin(OLED_DTA_PIN, OLED_CLK_PIN);

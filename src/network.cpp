@@ -143,7 +143,7 @@ void process_network_async() {
         int res = c.get(STRINGIFY(URL_TAP_IN));
         c.endRequest();
         int code = c.responseStatusCode();
-        log_d("connection watchdog: %d res: %d", code, res);
+        // log_d("connection watchdog: %d res: %d", code, res);
         really_connected = (res == 0) && (code == 200);
         c.stop();
     }

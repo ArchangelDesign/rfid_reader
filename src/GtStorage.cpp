@@ -3,12 +3,7 @@
 bool GtStorage::begin(uint8_t cs, uint8_t cd) {
     chipSelectPin = cs;
     cardDetectionPin = cd;
-    #ifdef AD_AVR
     pinMode(cardDetectionPin, INPUT_PULLUP);
-    #endif
-    #ifdef AD_ESP
-    pinMode(cardDetectionPin, INPUT);
-    #endif
     initialized = false;
 
     if (!isPresent()) {
@@ -17,6 +12,10 @@ bool GtStorage::begin(uint8_t cs, uint8_t cd) {
     }
     initialized = initialize();
     return initialized;
+}
+
+void GtStorage::end() {
+    SD.end();
 }
 
 bool GtStorage::initialize() {

@@ -26,26 +26,32 @@ bool reader_reset(void *)
 
 void initializeReader() {
   scan_counter = gt_mem_get_cntr();
-  SPI.begin(CLK_PIN, MISO_PIN, MOSI_PIN, SS_PIN);
+  
   mfrc522.PCD_Init();
   reader_timer.every(1000, reader_reset);
 }
 
 bool newCardDetected() {
+  // digitalWrite(SS_PIN, LOW);
   if ( ! mfrc522.PICC_IsNewCardPresent()) 
   {
+    // digitalWrite(SS_PIN, HIGH);
     return false;
   }
 
   if ( ! mfrc522.PICC_ReadCardSerial()) 
   {
+    log_e("Cannot read card");
+    // digitalWrite(SS_PIN, HIGH);
     return false;
   }
 
   if (memcmp(cardId, mfrc522.uid.uidByte, 4) == 0) {
+    // digitalWrite(SS_PIN, HIGH);
     return false;
   }
 
+  // digitalWrite(SS_PIN, HIGH);
   return true;
 }
 
@@ -57,8 +63,9 @@ void bt_log(const char * buf) {
 void processReader()
 {
     reader_timer.tick();
-    if (!newCardDetected())
+    if (!newCardDetected()) {
         return;
+    }
     memcpy(cardId, mfrc522.uid.uidByte, 4);
     reset_cycles = 0;
     Serial.printf("Card ID: %x:%x:%x:%x\n", cardId[0], cardId[1], cardId[2], cardId[3]);
