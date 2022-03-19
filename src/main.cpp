@@ -56,8 +56,8 @@ void setup() {
   log_d("initializing reader...");
   initializeReader();
 
-  // log_d("initializing screen...");
-  // gt_display.begin();
+  log_d("initializing screen...");
+  gt_display.begin();
 
   display_print(115, 9, "R");
   display_flush();

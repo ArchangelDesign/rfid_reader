@@ -5,9 +5,8 @@
 #include <Wire.h>
 #include <Fonts/FreeMonoBold18pt7b.h>
 
-#define TFT_BACKLIGHT 22
-#define TFT_CS        34 // yellow
-#define TFT_RST       35 // brown
+#define TFT_CS        33 // yellow
+#define TFT_RST       27 // brown
 #define TFT_DC        32 // blue
 
 class GtDisplay {

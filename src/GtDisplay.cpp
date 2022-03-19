@@ -7,8 +7,8 @@ GtDisplay::GtDisplay() {
 }
 
 void GtDisplay::begin() {
-    pinMode(TFT_BACKLIGHT, OUTPUT);
-    digitalWrite(TFT_BACKLIGHT, HIGH);
+    // pinMode(TFT_BACKLIGHT, OUTPUT);
+    // digitalWrite(TFT_BACKLIGHT, HIGH);
     tft.init(240, 320);
     tft.setRotation(3);
     tft.setFont(&FreeMonoBold18pt7b);
