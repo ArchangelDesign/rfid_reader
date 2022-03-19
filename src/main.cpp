@@ -35,25 +35,25 @@ void process_network(void *params) {
 // c3 = 32853 2/9/22   11819 scans
 void setup() {
   ad_buzzer.begin(BUZZER_PIN);
-  xTaskCreate(process_buzzer, "buzzer_loop", 1024, NULL, 1, NULL);
+  // xTaskCreate(process_buzzer, "buzzer_loop", 1024, NULL, 1, NULL);
   Serial.begin(115200);
   initialize_eeprom();
   ad_buzzer.beep(2);
-  // sleep(1);
+  sleep(1);
   
 
   init_display();
   display_print_size(100, 0, 2, "D");
   display_flush();
   ad_buzzer.beep(1);
-  // sleep(1);
+  sleep(1);
   display_print(115, 0, "N");
   display_flush();
   log_d("initializing network...");
   initialize_network();
-  // ad_buzzer.beep(1);
-  // sleep(1);
-  // log_d("initializing reader...");
+  ad_buzzer.beep(1);
+  sleep(1);
+  log_d("initializing reader...");
   initializeReader();
 
   // log_d("initializing screen...");
@@ -76,10 +76,12 @@ void setup() {
     delay(1000);
     gt_storage.end();
   }
+  pinMode(2, OUTPUT);
   // xTaskCreate(process_network, "network_loop", 2048, NULL, 1, NULL);
 }
 
 void loop() {
+  digitalWrite(2, HIGH);
   processReader();
   process_network();
   bt_process();
@@ -92,4 +94,5 @@ void loop() {
       gt_storage.end();
     }
   }
+  digitalWrite(2, LOW);
 }

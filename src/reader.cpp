@@ -5,7 +5,7 @@
 
 MFRC522::MIFARE_Key key = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 MFRC522::StatusCode status;
-MFRC522 mfrc522(SS_PIN, RST_PIN);
+MFRC522 mfrc522(AD_SS_PIN, AD_RST_PIN);
 byte cardId[4] = {0, 0, 0, 0};
 Timer<1, millis> reader_timer;
 uint8_t reset_cycles = 0;
@@ -25,6 +25,7 @@ bool reader_reset(void *)
 }
 
 void initializeReader() {
+  SPI.begin();
   scan_counter = gt_mem_get_cntr();
   
   mfrc522.PCD_Init();
@@ -32,26 +33,19 @@ void initializeReader() {
 }
 
 bool newCardDetected() {
-  // digitalWrite(SS_PIN, LOW);
-  if ( ! mfrc522.PICC_IsNewCardPresent()) 
-  {
-    // digitalWrite(SS_PIN, HIGH);
+  if ( ! mfrc522.PICC_IsNewCardPresent()) {
     return false;
   }
 
-  if ( ! mfrc522.PICC_ReadCardSerial()) 
-  {
+  if ( ! mfrc522.PICC_ReadCardSerial()) {
     log_e("Cannot read card");
-    // digitalWrite(SS_PIN, HIGH);
     return false;
   }
 
   if (memcmp(cardId, mfrc522.uid.uidByte, 4) == 0) {
-    // digitalWrite(SS_PIN, HIGH);
     return false;
   }
 
-  // digitalWrite(SS_PIN, HIGH);
   return true;
 }
 
