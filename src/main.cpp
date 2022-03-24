@@ -53,13 +53,13 @@ void setup() {
   sleep(1);
   
 
-  init_display();
-  display_print_size(100, 0, 2, "D");
-  display_flush();
+  // init_display();
+  // display_print_size(100, 0, 2, "D");
+  // display_flush();
   ad_buzzer.beep(1);
   sleep(1);
-  display_print(115, 0, "N");
-  display_flush();
+  // display_print(115, 0, "N");
+  // display_flush();
   log_d("initializing network...");
   initialize_network();
   ad_buzzer.beep(1);
@@ -70,19 +70,19 @@ void setup() {
   log_d("initializing screen...");
   gt_display.begin();
 
-  display_print(115, 9, "R");
-  display_flush();
+  // display_print(115, 9, "R");
+  // display_flush();
   ad_buzzer.beep(1);
   sleep(1);
   log_d("initializing bluetooth...");
-  display_print(122, 9, "B");
-  display_flush();
+  // display_print(122, 9, "B");
+  // display_flush();
   ad_buzzer.beep(1);
   sleep(1);
   initialize_blueetooth();
   log_d("initialization done.");
-  display_clear();
-  display_flush();
+  // display_clear();
+  // display_flush();
   while (!gt_storage.begin(AD_SD_CS, AD_SD_CD)) {
     delay(1000);
     // gt_storage.end();
@@ -115,7 +115,7 @@ void loop() {
   processReader();
   process_network();
   bt_process();
-  refresh_screen();
+  // refresh_screen();
   // if (!gt_storage.isReady()) {
   //   if (gt_storage.isPresent()) {
   //     log_d("card present. Trying to read...");

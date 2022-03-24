@@ -68,20 +68,18 @@ void WAVFileReader::getFrames(Frame_t *frames, int number_frames)
         }
         int16_t left;
         int16_t right;
-        // read in the next sample to the left channel
         m_file.read((uint8_t *)(&left), sizeof(int16_t));
-        // if we only have one channel duplicate the sample for the right channel
         if (m_num_channels == 1)
         {
             right = left;
         }
         else
         {
-            // otherwise read in the right channel sample
             m_file.read((uint8_t *)(&right), sizeof(int16_t));
         }
         // we need unsigned bytes for the ADC
         frames[i].left = left + 32768;
-        frames[i].right = right + 32768;
+        // using PCM 16 bit mono
+        // frames[i].right = right + 32768;
     }
 }
