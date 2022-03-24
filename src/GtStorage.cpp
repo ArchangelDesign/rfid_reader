@@ -1,13 +1,15 @@
 #include "GtStorage.h"
 
-bool GtStorage::begin(uint8_t cs, uint8_t cd) {
-    chipSelectPin = cs;
-    cardDetectionPin = cd;
-    pinMode(cardDetectionPin, INPUT_PULLUP);
+bool GtStorage::begin(uint8_t cs, int8_t cd) {
+    this->chipSelectPin = cs;
+    this->cardDetectionPin = cd;
+    if (cardDetectionPin > -1) {
+        pinMode(cardDetectionPin, INPUT_PULLUP);
+    }
     initialized = false;
 
     if (!isPresent()) {
-        Serial.println("No card present.");
+        log_e("No card present.");
         return false;
     }
     initialized = initialize();
@@ -62,6 +64,7 @@ bool GtStorage::initialize() {
     #endif
     #ifdef AD_ESP
     uint8_t cardType = SD.cardType();
+    Serial.print("Card Type: ");
     switch (cardType) {
         case CARD_SD:
             Serial.println("SDSC");
@@ -95,6 +98,9 @@ uint32_t GtStorage::getCardSize() {
 }
 
 bool GtStorage::isPresent() {
+    if (cardDetectionPin == -1) {
+        return true;
+    }
     return digitalRead(cardDetectionPin) == HIGH;
 }
 

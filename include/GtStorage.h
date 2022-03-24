@@ -5,16 +5,11 @@
 #include <SPI.h>
 #include <SD.h>
 
-#define SD_CS 36
-#define SD_MISO 34 // DO
-#define SD_MOSI 39 // DI
-#define SD_CLK 35
-
 #define AD_VOLUME_INFO_FILE "volume.inf"
 
 class GtStorage {
     public:
-        bool begin(uint8_t cs, uint8_t cd);
+        bool begin(uint8_t cs, int8_t cd = -1);
         uint32_t getCardSize();
         bool isPresent();
         bool isReady();
@@ -29,7 +24,7 @@ class GtStorage {
         SdFile root;
     #endif
         uint8_t chipSelectPin;
-        uint8_t cardDetectionPin;
+        int8_t cardDetectionPin;
         bool initialized = false;
 
         bool initialize();
