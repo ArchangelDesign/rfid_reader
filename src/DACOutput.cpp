@@ -8,7 +8,6 @@
 #include "SampleSource.h"
 #include "DACOutput.h"
 
-// number of frames to try and send at once (a frame is a left and right sample)
 #define NUM_FRAMES_TO_SEND 128
 
 void i2sWriterTask(void *param)
@@ -39,7 +38,6 @@ void i2sWriterTask(void *param)
                     // do we have something to write?
                     if (availableBytes > 0)
                     {
-                        // write data to the i2s peripheral
                         i2s_write(I2S_NUM_0, buffer_position + (uint8_t *)frames,
                                   availableBytes, &bytesWritten, portMAX_DELAY);
                         availableBytes -= bytesWritten;
@@ -50,18 +48,19 @@ void i2sWriterTask(void *param)
             }
         }
     }
-    i2s_driver_uninstall(I2S_NUM_0);
+    log_d("playback done.");
     delay(100);
     delete output->m_sample_generator;
     output->m_busy = false;
-    vTaskDelete(NULL);
+    vTaskDelete(output->m_i2sWriterTaskHandle);
 }
 
 i2s_config_t DACOutput::get_config()
 {
     return {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_DAC_BUILT_IN),
-        .sample_rate = m_sample_generator->sampleRate(),
+        // .sample_rate = m_sample_generator->sampleRate(),
+        .sample_rate = 22050,
         .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
         .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S_MSB),
@@ -77,7 +76,6 @@ void DACOutput::startOrSkip(SampleSource *sample_generator)
         return;
     }
     m_sample_generator = sample_generator;
-    initialize();
     TaskHandle_t writerTaskHandle;
     xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &writerTaskHandle);
 }
@@ -89,16 +87,16 @@ void DACOutput::startOrWait(SampleSource *sample_generator)
             delay(500);
         }
     }
+    
+    delay(100);
     m_sample_generator = sample_generator;
-    initialize();
-    TaskHandle_t writerTaskHandle;
-    xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &writerTaskHandle);
+    xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &m_i2sWriterTaskHandle);
 }
 
 void DACOutput::initialize()
 {
     i2s_config_t i2sConfig = get_config();
     i2s_driver_install(I2S_NUM_0, &i2sConfig, 4, &m_i2sQueue);
-    i2s_set_dac_mode(I2S_DAC_CHANNEL_LEFT_EN);
+    i2s_set_dac_mode(I2S_DAC_CHANNEL_RIGHT_EN);
     i2s_zero_dma_buffer(I2S_NUM_0);
 }

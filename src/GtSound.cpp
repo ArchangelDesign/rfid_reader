@@ -28,3 +28,20 @@ void GtSound::systemReady()
     WAVFileReader *sampleSource = new WAVFileReader("/smpl4.wav");
     output->startOrWait(sampleSource);
 }
+
+void GtSound::initialize()
+{
+    output->initialize();
+}
+
+void GtSound::readerInitialized()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl5.wav");
+    output->startOrWait(sampleSource);
+}
+
+void GtSound::eepromInitialized()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl6.wav");
+    output->startOrWait(sampleSource);
+}

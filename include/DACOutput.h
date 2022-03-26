@@ -12,15 +12,10 @@ class SampleSource;
 class DACOutput
 {
 private:
-    // I2S write task
     TaskHandle_t m_i2sWriterTaskHandle;
-    // i2s writer queue
     QueueHandle_t m_i2sQueue;
-    // src of samples for us to play
     SampleSource *m_sample_generator;
-
     bool m_busy = false;
-
     i2s_config_t get_config();
 
 public:
