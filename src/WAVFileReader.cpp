@@ -83,3 +83,8 @@ void WAVFileReader::getFrames(Frame_t *frames, int number_frames)
         // frames[i].right = right + 32768;
     }
 }
+
+bool WAVFileReader::hasMoreData()
+{
+    return m_file.available() > 0;
+}

@@ -17,6 +17,7 @@ public:
     ~WAVFileReader();
     int sampleRate() { return m_sample_rate; }
     void getFrames(Frame_t *frames, int number_frames);
+    bool hasMoreData();
 };
 
 #endif
