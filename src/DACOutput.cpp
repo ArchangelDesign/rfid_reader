@@ -16,6 +16,7 @@ void i2sWriterTask(void *param)
     DACOutput *output = (DACOutput *)param;
     int availableBytes = 0;
     int buffer_position = 0;
+    output->m_busy = true;
     Frame_t frames[128];
     bool has_more_data = output->m_sample_generator->hasMoreData();
     while (has_more_data)
@@ -49,35 +50,55 @@ void i2sWriterTask(void *param)
             }
         }
     }
-    Serial.println("task complete");
-    delete output->m_sample_generator;
     i2s_driver_uninstall(I2S_NUM_0);
+    delay(100);
+    delete output->m_sample_generator;
+    output->m_busy = false;
     vTaskDelete(NULL);
 }
 
-void DACOutput::start(SampleSource *sample_generator)
+i2s_config_t DACOutput::get_config()
 {
-    m_sample_generator = sample_generator;
-    // i2s config for writing both channels of I2S
-    i2s_config_t i2sConfig = {
+    return {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_DAC_BUILT_IN),
         .sample_rate = m_sample_generator->sampleRate(),
         .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-        // .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
         .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S_MSB),
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
         .dma_buf_count = 4,
         .dma_buf_len = 64
     };
+}
 
-    //install and start i2s driver
-    i2s_driver_install(I2S_NUM_0, &i2sConfig, 4, &m_i2sQueue);
-    // enable the DAC channels
-    i2s_set_dac_mode(I2S_DAC_CHANNEL_LEFT_EN);
-    // clear the DMA buffers
-    i2s_zero_dma_buffer(I2S_NUM_0);
-    // start a task to write samples to the i2s peripheral
+void DACOutput::startOrSkip(SampleSource *sample_generator)
+{
+    if (isBusy()) {
+        return;
+    }
+    m_sample_generator = sample_generator;
+    initialize();
     TaskHandle_t writerTaskHandle;
     xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &writerTaskHandle);
+}
+
+void DACOutput::startOrWait(SampleSource *sample_generator)
+{
+    if (isBusy()) {
+        while (isBusy()) {
+            delay(500);
+        }
+    }
+    m_sample_generator = sample_generator;
+    initialize();
+    TaskHandle_t writerTaskHandle;
+    xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &writerTaskHandle);
+}
+
+void DACOutput::initialize()
+{
+    i2s_config_t i2sConfig = get_config();
+    i2s_driver_install(I2S_NUM_0, &i2sConfig, 4, &m_i2sQueue);
+    i2s_set_dac_mode(I2S_DAC_CHANNEL_LEFT_EN);
+    i2s_zero_dma_buffer(I2S_NUM_0);
 }

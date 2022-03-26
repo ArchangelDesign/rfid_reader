@@ -19,10 +19,16 @@ private:
     // src of samples for us to play
     SampleSource *m_sample_generator;
 
-public:
-    void start(SampleSource *sample_generator);
+    bool m_busy = false;
 
+    i2s_config_t get_config();
+
+public:
+    void startOrSkip(SampleSource *sample_generator);
+    void startOrWait(SampleSource *sample_generator);
     friend void i2sWriterTask(void *param);
+    bool isBusy() { return m_busy; }
+    void initialize();
 };
 
 #endif

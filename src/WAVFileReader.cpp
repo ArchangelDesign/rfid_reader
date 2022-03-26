@@ -62,19 +62,17 @@ WAVFileReader::~WAVFileReader()
 size_t WAVFileReader::getFrames(Frame_t *frames, int number_frames)
 {
     memset(frames, 0, number_frames);
-    size_t bytes_read = 0;
+    size_t frames_read = 0;
     if (!m_is_open) {
         return 0;
     }
-    // fill the buffer with data from the file wrapping around if necessary
     for (int i = 0; i < number_frames; i++)
     {
-        // if we've reached the end of the file then seek back to the beginning (after the header)
         if (m_file.available() == 0)
         {
             m_file.close();
             m_is_open = false;
-            return bytes_read;
+            return frames_read;
         }
         int16_t left;
         int16_t right;
@@ -91,10 +89,10 @@ size_t WAVFileReader::getFrames(Frame_t *frames, int number_frames)
         frames[i].left = left + 32768;
         // using PCM 16 bit mono
         // frames[i].right = right + 32768;
-        bytes_read++;
+        frames_read++;
     }
 
-    return bytes_read;
+    return frames_read;
 }
 
 bool WAVFileReader::hasMoreData()
