@@ -11,12 +11,12 @@ private:
     int m_num_channels;
     int m_sample_rate;
     File m_file;
-
+    bool m_is_open = false;
 public:
     WAVFileReader(const char *file_name);
-    ~WAVFileReader();
+    virtual ~WAVFileReader();
     int sampleRate() { return m_sample_rate; }
-    void getFrames(Frame_t *frames, int number_frames);
+    size_t getFrames(Frame_t *frames, int number_frames);
     bool hasMoreData();
 };
 

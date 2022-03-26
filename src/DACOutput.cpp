@@ -17,7 +17,8 @@ void i2sWriterTask(void *param)
     int availableBytes = 0;
     int buffer_position = 0;
     Frame_t frames[128];
-    while (true)
+    bool has_more_data = output->m_sample_generator->hasMoreData();
+    while (has_more_data)
     {
         // wait for some data to be requested
         i2s_event_t evt;
@@ -30,8 +31,8 @@ void i2sWriterTask(void *param)
                 {
                     if (availableBytes == 0)
                     {
-                        output->m_sample_generator->getFrames(frames, NUM_FRAMES_TO_SEND);
-                        availableBytes = NUM_FRAMES_TO_SEND * sizeof(Frame_t);
+                        availableBytes = output->m_sample_generator->getFrames(frames, NUM_FRAMES_TO_SEND);
+                        availableBytes *= sizeof(Frame_t);
                         buffer_position = 0;
                     }
                     // do we have something to write?
@@ -43,10 +44,15 @@ void i2sWriterTask(void *param)
                         availableBytes -= bytesWritten;
                         buffer_position += bytesWritten;
                     }
-                } while (bytesWritten > 0);
+                    has_more_data = output->m_sample_generator->hasMoreData();
+                } while (has_more_data);
             }
         }
     }
+    Serial.println("task complete");
+    delete output->m_sample_generator;
+    i2s_driver_uninstall(I2S_NUM_0);
+    vTaskDelete(NULL);
 }
 
 void DACOutput::start(SampleSource *sample_generator)

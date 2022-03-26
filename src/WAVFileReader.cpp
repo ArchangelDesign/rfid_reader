@@ -49,22 +49,32 @@ WAVFileReader::WAVFileReader(const char *file_name)
 
     m_num_channels = wav_header.num_channels;
     m_sample_rate = wav_header.sample_rate;
+    m_is_open = true;
 }
 
 WAVFileReader::~WAVFileReader()
 {
-    m_file.close();
+    if (m_is_open) {
+        m_file.close();
+    }
 }
 
-void WAVFileReader::getFrames(Frame_t *frames, int number_frames)
+size_t WAVFileReader::getFrames(Frame_t *frames, int number_frames)
 {
+    memset(frames, 0, number_frames);
+    size_t bytes_read = 0;
+    if (!m_is_open) {
+        return 0;
+    }
     // fill the buffer with data from the file wrapping around if necessary
     for (int i = 0; i < number_frames; i++)
     {
         // if we've reached the end of the file then seek back to the beginning (after the header)
         if (m_file.available() == 0)
         {
-            m_file.seek(44);
+            m_file.close();
+            m_is_open = false;
+            return bytes_read;
         }
         int16_t left;
         int16_t right;
@@ -81,10 +91,16 @@ void WAVFileReader::getFrames(Frame_t *frames, int number_frames)
         frames[i].left = left + 32768;
         // using PCM 16 bit mono
         // frames[i].right = right + 32768;
+        bytes_read++;
     }
+
+    return bytes_read;
 }
 
 bool WAVFileReader::hasMoreData()
 {
+    if (!m_is_open) {
+        return false;
+    }
     return m_file.available() > 0;
 }

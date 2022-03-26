@@ -14,9 +14,10 @@ typedef struct
 class SampleSource
 {
 public:
+    virtual ~SampleSource() {};
     virtual int sampleRate() = 0;
     // This should fill the samples buffer with the specified number of frames
-    virtual void getFrames(Frame_t *frames, int number_frames) = 0;
+    virtual size_t getFrames(Frame_t *frames, int number_frames) = 0;
 
     virtual bool hasMoreData();
 };
