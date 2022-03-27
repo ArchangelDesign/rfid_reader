@@ -42,10 +42,15 @@ WAVFileReader::WAVFileReader(const char *file_name)
     if (wav_header.bit_depth != 16)
     {
         Serial.printf("ERROR: bit depth %d is not supported\n", wav_header.bit_depth);
+        throw std::invalid_argument("Invalid bit depth.");
+    }
+    if (wav_header.sample_rate != AD_SAMPLE_RATE)
+    {
+        throw std::invalid_argument("Invalid sample rate.");
     }
 
-    Serial.printf("fmt_chunk_size=%d, audio_format=%d, num_channels=%d, sample_rate=%d, sample_alignment=%d, bit_depth=%d, data_bytes=%d\n",
-                  wav_header.fmt_chunk_size, wav_header.audio_format, wav_header.num_channels, wav_header.sample_rate, wav_header.sample_alignment, wav_header.bit_depth, wav_header.data_bytes);
+    // Serial.printf("fmt_chunk_size=%d, audio_format=%d, num_channels=%d, sample_rate=%d, sample_alignment=%d, bit_depth=%d, data_bytes=%d\n",
+    //               wav_header.fmt_chunk_size, wav_header.audio_format, wav_header.num_channels, wav_header.sample_rate, wav_header.sample_alignment, wav_header.bit_depth, wav_header.data_bytes);
 
     m_num_channels = wav_header.num_channels;
     m_sample_rate = wav_header.sample_rate;

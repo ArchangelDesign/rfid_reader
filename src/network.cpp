@@ -2,6 +2,7 @@
 #include "buzzer.h"
 #include "status.h"
 #include "storage.h"
+#include "GtSound.h"
 
 uint8_t network_status = NET_STATUS_IDLE;
 uint8_t disconnected_seconds = 0;
@@ -12,13 +13,14 @@ Timer<3, millis> network_timer;
 uint8_t watchdog_timer = 0;
 
 WiFiClient wifi;
-HttpClient client = HttpClient(wifi, server_address, server_port);
+HttpClient client = HttpClient(wifi, STRINGIFY(AD_SERVER_ADDRESS), AD_SERVER_PORT);
 
 bool really_connected = false;
 char ip_address[21] = "";
 char gt_ssid[GT_MEM_SIZE_SSID];
 char gt_pass[GT_MEM_SIZE_PASS];
 bool busy = false;
+bool ever_connected = false;
 
 bool is_connected()
 {
@@ -32,12 +34,16 @@ bool network_status_callback(void *) {
         if (network_status == NET_STATUS_OK) {
             sprintf(ip_address, "%s", WiFi.localIP().toString().c_str());
             log_i("Connected to %s with IP address: %s", ssid,ip_address);
-            ad_buzzer.beep(5);
+            ever_connected = true;
+            gt_sound.connectedToWiFi();
         }
     }
     if (!is_connected()) {
         disconnected_seconds++;
         really_connected = false;
+    }
+    if (!is_connected() && ever_connected) {
+        gt_sound.disconnectedFromServer();
     }
     if (disconnected_seconds > 10) {
         ad_buzzer.beep(5);
@@ -131,16 +137,16 @@ const char* get_network_status_string() {
 }
 
 void process_network_async() {
-    if (watchdog_timer < 10) {
+    if (watchdog_timer < 3) {
         watchdog_timer++;
         return;
     }
     watchdog_timer = 0;
     if (is_connected()) {
-        HttpClient c = HttpClient(wifi, server_address, server_port);
+        HttpClient c = HttpClient(wifi, STRINGIFY(AD_SERVER_ADDRESS), AD_SERVER_PORT);
         c.setHttpResponseTimeout(2000);
         c.beginRequest();
-        int res = c.get(STRINGIFY(URL_TAP_IN));
+        int res = c.get(STRINGIFY(URL_HEALTH));
         c.endRequest();
         int code = c.responseStatusCode();
         // log_d("connection watchdog: %d res: %d", code, res);

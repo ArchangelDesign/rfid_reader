@@ -18,6 +18,7 @@ void i2sWriterTask(void *param)
     output->m_busy = true;
     Frame_t frames[128];
     bool has_more_data = output->m_sample_generator->hasMoreData();
+    digitalWrite(2, HIGH);
     while (has_more_data)
     {
         // wait for some data to be requested
@@ -49,6 +50,7 @@ void i2sWriterTask(void *param)
         }
     }
     log_d("playback done.");
+    digitalWrite(2, LOW);
     delay(100);
     delete output->m_sample_generator;
     output->m_busy = false;
@@ -59,8 +61,7 @@ i2s_config_t DACOutput::get_config()
 {
     return {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_DAC_BUILT_IN),
-        // .sample_rate = m_sample_generator->sampleRate(),
-        .sample_rate = 22050,
+        .sample_rate = AD_SAMPLE_RATE,
         .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
         .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S_MSB),

@@ -45,3 +45,21 @@ void GtSound::eepromInitialized()
     WAVFileReader *sampleSource = new WAVFileReader("/smpl6.wav");
     output->startOrWait(sampleSource);
 }
+
+void GtSound::connectedToWiFi()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl7.wav");
+    output->startOrWait(sampleSource);
+}
+
+void GtSound::disconnectedFromServer()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl8.wav");
+    output->startOrWait(sampleSource);
+}
+
+void GtSound::connecting()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl9.wav");
+    output->startOrWait(sampleSource);
+}

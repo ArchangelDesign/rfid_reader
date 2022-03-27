@@ -18,24 +18,26 @@ bool buzzer_process_running = true;
 GtDisplay gt_display = GtDisplay();
 GtStorage gt_storage = GtStorage();
 GtSound gt_sound = GtSound();
+bool reported_ready = false;
 
 // c1 = 8717 2/6/22
 // c2 = 21034 2/7/22   12317 scans
 // c3 = 32853 2/9/22   11819 scans
 void setup() {
   Serial.begin(115200);
+  delay(300);
   while (!gt_storage.begin(AD_SD_CS, AD_SD_CD)) {
     delay(1000);
-    // gt_storage.end();
   }
   log_d("storage initialized.");
   gt_sound.initialize();
   log_d("sound initialized.");
   delay(200);
   gt_sound.systemStarting();
+  delay(300);
   initialize_eeprom();
-  sleep(1);
   gt_sound.eepromInitialized();
+  sleep(1);
   log_d("initializing network...");
   initialize_network();
   gt_sound.networkReady();
@@ -55,21 +57,15 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(2, HIGH);
+  if (really_connected && !reported_ready) {
+    gt_sound.systemReady();
+    reported_ready = true;
+  }
+  if (!really_connected) {
+    gt_sound.connecting();
+    sleep(3);
+  }
   processReader();
   process_network();
   bt_process();
-  gt_sound.systemReady();
-  sleep(5);
-  // refresh_screen();
-  // if (!gt_storage.isReady()) {
-  //   if (gt_storage.isPresent()) {
-  //     log_d("card present. Trying to read...");
-  //     gt_storage.begin(5, 4);
-  //     delay(2000);
-  //     gt_storage.end();
-  //   }
-  // }
-  // digitalWrite(2, LOW);
-    // delay(10);
 }
