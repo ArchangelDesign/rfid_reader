@@ -2,6 +2,7 @@
 #include "status.h"
 #include "screen.h"
 #include "storage.h"
+#include "GtSound.h"
 
 MFRC522::MIFARE_Key key = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 MFRC522::StatusCode status;
@@ -67,7 +68,7 @@ void processReader()
     sprintf(buf, "Card ID: %x:%x:%x:%x", cardId[0], cardId[1], cardId[2], cardId[3]);
     sprintf(last_error, "%s", "BUSY");
     bt_log((const char*)buf);
-    ad_buzzer.beep(1);
+    gt_sound.cardDetected();
     uint8_t result = 90;
     if (current_mode == gt_tap_in) {
       result = tap_in(cardId);
@@ -78,10 +79,12 @@ void processReader()
     switch (result) {
       case ACTION_OK:
         bt_log("OK");
+        gt_sound.ok();
         break;
       case ERR_INVALID_UID:
         bt_log("INVALID CARD");
         sprintf(last_error, "%s", "INVALID");
+        gt_sound.invalidCard();
         break;
       case ERR_ALREADY_TAPPED_IN:
       case ERR_ALREADY_TAPPED_OUT:
@@ -91,14 +94,17 @@ void processReader()
       case ERR_SERVER_ERROR:
         sprintf(last_error, "%s", "SERVER FAILURE");
         bt_log("SERVER ERROR");
+        gt_sound.networkError();
         break;
       case ERR_NO_CONNECTION:
         sprintf(last_error, "%s", "NO NET");
         bt_log("NO CONNECTION");
+        gt_sound.networkError();
         break;
       default:
         sprintf(last_error, "%s", "ERROR");
         bt_log("INVALID CODE RETURNED FROM THE SERVER");
+        gt_sound.networkError();
         break;
     }
     scan_counter++;

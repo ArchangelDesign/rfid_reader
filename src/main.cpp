@@ -26,6 +26,7 @@ bool reported_ready = false;
 void setup() {
   Serial.begin(115200);
   delay(300);
+  pinMode(2, OUTPUT);
   while (!gt_storage.begin(AD_SD_CS, AD_SD_CD)) {
     delay(1000);
   }
@@ -37,9 +38,10 @@ void setup() {
   delay(300);
   initialize_eeprom();
   gt_sound.eepromInitialized();
-  sleep(1);
+  sleep(3);
   log_d("initializing network...");
   initialize_network();
+  sleep(2);
   gt_sound.networkReady();
   log_d("initializing reader...");
   sleep(1);
@@ -52,7 +54,7 @@ void setup() {
   initialize_blueetooth();
   gt_sound.bluetoothReady();
   sleep(1);
-  pinMode(2, OUTPUT);
+  
   log_d("initialization done.");
 }
 
