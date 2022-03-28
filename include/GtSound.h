@@ -14,6 +14,10 @@ class GtSound {
         void initialize();
         void disconnectedFromServer();
         void connecting();
+        void cardDetected();
+        void invalidCard();
+        void ok();
+        void networkError();
     private:
         DACOutput *output;
 };

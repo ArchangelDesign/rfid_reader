@@ -63,3 +63,27 @@ void GtSound::connecting()
     WAVFileReader *sampleSource = new WAVFileReader("/smpl9.wav");
     output->startOrWait(sampleSource);
 }
+
+void GtSound::cardDetected()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl10.wav");
+    output->startOrWait(sampleSource);
+}
+
+void GtSound::invalidCard()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl11.wav");
+    output->startOrWait(sampleSource);
+}
+
+void GtSound::ok()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl12.wav");
+    output->startOrWait(sampleSource);
+}
+
+void GtSound::networkError()
+{
+    WAVFileReader *sampleSource = new WAVFileReader("/smpl13.wav");
+    output->startOrWait(sampleSource);
+}
