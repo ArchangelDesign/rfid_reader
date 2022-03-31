@@ -12,6 +12,7 @@ class GtSound {
         void eepromInitialized();
         void connectedToWiFi();
         void initialize();
+        void shutdown();
         void disconnectedFromServer();
         void connecting();
         void cardDetected();

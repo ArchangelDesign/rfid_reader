@@ -34,6 +34,11 @@ void GtSound::initialize()
     output->initialize();
 }
 
+void GtSound::shutdown()
+{
+    output->shutdown();
+}
+
 void GtSound::readerInitialized()
 {
     WAVFileReader *sampleSource = new WAVFileReader("/smpl5.wav");

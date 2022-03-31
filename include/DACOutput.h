@@ -24,6 +24,7 @@ public:
     friend void i2sWriterTask(void *param);
     bool isBusy() { return m_busy; }
     void initialize();
+    void shutdown();
 };
 
 #endif
