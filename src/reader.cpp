@@ -1,6 +1,5 @@
 #include "reader.h"
 #include "status.h"
-#include "screen.h"
 #include "storage.h"
 #include "GtSound.h"
 
@@ -108,6 +107,7 @@ void processReader()
         break;
     }
     scan_counter++;
+    Serial.printf("SCANS: %d\n", scan_counter);
     gt_mem_set_cntr(scan_counter);
 }
 

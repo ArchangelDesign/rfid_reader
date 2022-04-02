@@ -1,9 +1,10 @@
 #include <Arduino.h>
+#include <SPI.h>
+#include <Wire.h>
 
 #include "status.h"
 #include "storage.h"
 #include "reader.h"
-#include "screen.h"
 #include "bluetooth.h"
 #include "ADBuzzer.h"
 #include "GtDisplay.h"
@@ -12,6 +13,14 @@
 #include "WAVFileReader.h"
 #include "SinWaveGenerator.h"
 #include "GtSound.h"
+
+
+#include <Adafruit_SSD1306.h>
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define SCREEN_ADDRESS 0x3C
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 
 ADBuzzer ad_buzzer;
 bool buzzer_process_running = true;
@@ -27,6 +36,8 @@ void setup() {
   Serial.begin(115200);
   delay(300);
   pinMode(2, OUTPUT);
+  // SPI.begin();
+  // SPI.setFrequency()
   while (!gt_storage.begin(AD_SD_CS, AD_SD_CD)) {
     delay(1000);
   }
