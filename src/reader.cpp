@@ -38,7 +38,6 @@ bool newCardDetected() {
   }
 
   if ( ! mfrc522.PICC_ReadCardSerial()) {
-    log_e("Cannot read card");
     return false;
   }
 

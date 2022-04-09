@@ -1,50 +1,70 @@
-
 #include "GtDisplay.h"
+#include "network.h"
 
-
-GtDisplay::GtDisplay() {
+GtDisplay::GtDisplay(GtStorage *storeage) {
     memset(buffer, 0, 30);
+    this->storage = storage;
 }
 
 void GtDisplay::begin() {
-    // pinMode(TFT_BACKLIGHT, OUTPUT);
-    // digitalWrite(TFT_BACKLIGHT, HIGH);
     tft.init(240, 320);
     tft.setRotation(3);
     tft.setFont(&FreeMonoBold18pt7b);
     delay(100);
-    
-    tft.fillScreen(ST77XX_CYAN);
-    tft.fillRect(0, 0, 320, 50, ST77XX_BLACK);
+    clear();
+    drawGrid();
     paint();
 }
 
 void GtDisplay::paint() {
-    char buf[30] = {};
-    sprintf(buf, "FRAME: %d", frameCount);
-    printLine1(buf);
-    frameCount++;
-}
 
-void GtDisplay::printLine1(char buf[]) {
-    int index = 0;
-    while (buf[index] != 0 && index < 30) {
-        if (buffer[index] == buf[index]) {
-            buffer[index] = ' ';
-        }
-        index++;
-    }
-    tft.setCursor(5, 35);
-    tft.setTextColor(ST77XX_BLACK);
-    tft.print(buffer);
-    delay(5);
-    tft.setCursor(5, 35);
-    tft.setTextColor(ST77XX_WHITE);
-    tft.print(buf);
-    memcpy(buffer, buf, 30);
 }
 
 void GtDisplay::loop() {
     paint();
     // delay(300);
+}
+
+void GtDisplay::clear()
+{
+    tft.fillScreen(ST77XX_CYAN);
+}
+
+void GtDisplay::drawGrid()
+{
+    drawSdInfo();
+    drawLogo();
+}
+
+void GtDisplay::drawSdInfo()
+{
+    tft.drawRoundRect(1, 175, 160, 64, 5, ST77XX_BLACK);
+    tft.setCursor(18, 180);
+    tft.setTextColor(ST77XX_BLACK);
+    tft.setTextSize(1);
+    setFontTitle();
+    tft.fillRect(10, 170, 40, 10, ST77XX_CYAN);
+    tft.print("SD");
+    tft.setCursor(8, 200);
+    setFontRegular();
+    tft.printf("Size: %d GB", storage->getCardSizeGb());
+    tft.setCursor(8, 225);
+    tft.printf("Type: %s", storage->getCardTypeString());
+}
+
+void GtDisplay::drawLogo()
+{
+
+}
+
+void GtDisplay::setFontTitle()
+{
+    tft.setFont(&FreeSansBold9pt7b);
+    tft.setTextSize(1);
+}
+
+void GtDisplay::setFontRegular()
+{
+    tft.setFont(&FreeSans9pt7b);
+    tft.setTextSize(1);
 }

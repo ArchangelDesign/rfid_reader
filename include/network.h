@@ -4,11 +4,6 @@
 #include <ArduinoHttpClient.h>
 #include <arduino-timer.h>
 
-#define ssid "Archangel"
-#define password "boogerbee"
-// #define server_address "192.168.0.190"
-#define server_port 80
-
 #define RES_BUFFER_SIZE 8
 #define REQ_BUFFER_SIZE 120
 

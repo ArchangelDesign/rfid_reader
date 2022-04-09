@@ -11,9 +11,11 @@ class GtStorage {
     public:
         bool begin(uint8_t cs, int8_t cd = -1);
         uint32_t getCardSize();
+        uint32_t getCardSizeGb();
         bool isPresent();
         bool isReady();
         uint8_t getFatType();
+        const char* getCardTypeString();
         void openRoot();
         bool writeInfo(const char *info);
         void end();
@@ -26,7 +28,6 @@ class GtStorage {
         uint8_t chipSelectPin;
         int8_t cardDetectionPin;
         bool initialized = false;
-
         bool initialize();
 };
 

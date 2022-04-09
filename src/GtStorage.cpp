@@ -26,75 +26,31 @@ bool GtStorage::initialize() {
         return false;
     }
     Serial.println("mounted!");
-    #ifdef AD_AVR
-    if (!card.init(SPI_HALF_SPEED, chipSelectPin)) {
-        Serial.println("card init failed");
-        delay(1000);
-        return false;
-    }
-    Serial.print("card type: ");
-    switch (card.type()) {
-    case SD_CARD_TYPE_SD1:
-      Serial.println("SD1");
-      break;
-    case SD_CARD_TYPE_SD2:
-      Serial.println("SD2");
-      break;
-    case SD_CARD_TYPE_SDHC:
-      Serial.println("SDHC");
-      break;
-    default:
-      Serial.println("Unknown");
-    }
-
-    if (!volume.init(card)) {
-        Serial.println("Cannot mount volume");
-        return false;
-    }
-    Serial.print("FAT count: ");
-    Serial.println(volume.fatCount());
-    Serial.print("Clusters: ");
-    Serial.println(volume.clusterCount());
-
-    Serial.print("SIZE: ");
-    Serial.print(getCardSize());
-    Serial.println(" MB");
-    openRoot();
-    return true;
-    #endif
-    #ifdef AD_ESP
-    uint8_t cardType = SD.cardType();
     Serial.print("Card Type: ");
-    switch (cardType) {
-        case CARD_SD:
-            Serial.println("SDSC");
-            break;
-        case CARD_MMC:
-            Serial.println("MMC");
-            break;
-        case CARD_SDHC:
-            Serial.println("SDHC");
-            break;
-        default:
-            Serial.println("UNKNOWN");
-    }
-    #endif
+    Serial.println(getCardTypeString());
     return true;
 }
 
+const char* GtStorage::getCardTypeString()
+{
+    switch (SD.cardType()) {
+        case CARD_SD:
+            return "SDSC";
+        case CARD_MMC:
+            return "MMC";
+        case CARD_SDHC:
+            return "SDHC";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 uint32_t GtStorage::getCardSize() {
-    #ifdef AD_AVR
-    uint32_t volumesize;
-    volumesize = volume.blocksPerCluster();
-    volumesize *= volume.clusterCount();
-    volumesize /= 2;
-    volumesize /= 1024;
-    return volumesize / 1024;
-    #endif
-    #ifdef AD_ESP
     return SD.cardSize() / 1024 / 1024;
-    #endif
-    return 0;
+}
+
+uint32_t GtStorage::getCardSizeGb() {
+    return SD.cardSize() / 1024 / 1024 / 1024;
 }
 
 bool GtStorage::isPresent() {

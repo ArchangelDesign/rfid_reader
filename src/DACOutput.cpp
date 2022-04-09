@@ -16,7 +16,7 @@ void i2sWriterTask(void *param)
     int availableBytes = 0;
     int buffer_position = 0;
     output->m_busy = true;
-    Frame_t frames[128];
+    Frame_t frames[NUM_FRAMES_TO_SEND];
     bool has_more_data = output->m_sample_generator->hasMoreData();
     digitalWrite(2, HIGH);
     while (has_more_data)
@@ -66,8 +66,8 @@ i2s_config_t DACOutput::get_config()
         .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S_MSB),
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-        .dma_buf_count = 4,
-        .dma_buf_len = 64
+        .dma_buf_count = 2,
+        .dma_buf_len = 1024
     };
 }
 
@@ -83,6 +83,9 @@ void DACOutput::startOrSkip(SampleSource *sample_generator)
 
 void DACOutput::startOrWait(SampleSource *sample_generator)
 {
+    #ifdef AD_DISABLE_SOUND
+    return;
+    #endif
     if (isBusy()) {
         while (isBusy()) {
             delay(500);

@@ -11,37 +11,33 @@
 #include "GtStorage.h"
 #include "DACOutput.h"
 #include "WAVFileReader.h"
-#include "SinWaveGenerator.h"
+// #include "SinWaveGenerator.h"
 #include "GtSound.h"
-
-
-#include <Adafruit_SSD1306.h>
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
-#define SCREEN_ADDRESS 0x3C
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 
 ADBuzzer ad_buzzer;
 bool buzzer_process_running = true;
-GtDisplay gt_display = GtDisplay();
 GtStorage gt_storage = GtStorage();
+GtDisplay gt_display = GtDisplay(&gt_storage);
 GtSound gt_sound = GtSound();
 bool reported_ready = false;
 
 // c1 = 8717 2/6/22
 // c2 = 21034 2/7/22   12317 scans
 // c3 = 32853 2/9/22   11819 scans
+// 384 4/3/22
 void setup() {
   Serial.begin(115200);
   delay(300);
   pinMode(2, OUTPUT);
-  // SPI.begin();
-  // SPI.setFrequency()
+  #ifndef AD_DISABLE_SOUND
   while (!gt_storage.begin(AD_SD_CS, AD_SD_CD)) {
     delay(1000);
   }
   log_d("storage initialized.");
+  #else
+  log_d("sound disabled");
+  #endif
   gt_sound.initialize();
   log_d("sound initialized.");
   sleep(1);

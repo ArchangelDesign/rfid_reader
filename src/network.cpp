@@ -33,7 +33,7 @@ bool network_status_callback(void *) {
         network_status = WiFi.status();
         if (network_status == NET_STATUS_OK) {
             sprintf(ip_address, "%s", WiFi.localIP().toString().c_str());
-            log_i("Connected to %s with IP address: %s", ssid,ip_address);
+            log_i("Connected to %s with IP address: %s", gt_ssid, ip_address);
             ever_connected = true;
             gt_sound.connectedToWiFi();
         }

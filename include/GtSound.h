@@ -1,5 +1,6 @@
 #pragma once
 #include "DACOutput.h"
+#include "WAVFileReader.h"
 
 class GtSound {
     public:
@@ -19,6 +20,7 @@ class GtSound {
         void invalidCard();
         void ok();
         void networkError();
+        WAVFileReader* loadSound(const char* fname);
     private:
         DACOutput *output;
 };

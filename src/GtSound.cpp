@@ -1,94 +1,92 @@
 #include "GtSound.h"
-#include "WAVFileReader.h"
 
 GtSound::GtSound() {
     output = new DACOutput();
 }
 
+WAVFileReader* GtSound::loadSound(const char* fname)
+{
+    #ifdef AD_DISABLE_SOUND
+    return NULL;
+    #endif
+    return new WAVFileReader(fname);
+}
+
 void GtSound::systemStarting()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl1.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl1.wav"));
 }
 
 void GtSound::networkReady()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl2.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl2.wav"));
 }
 
 void GtSound::bluetoothReady()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl3.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl3.wav"));
 }
 
 void GtSound::systemReady()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl4.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl4.wav"));
 }
 
 void GtSound::initialize()
 {
+    #ifndef AD_DISABLE_SOUND
     output->initialize();
+    #endif
 }
 
 void GtSound::shutdown()
 {
+    #ifndef AD_DISABLE_SOUND
     output->shutdown();
+    #endif
 }
 
 void GtSound::readerInitialized()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl5.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl5.wav"));
 }
 
 void GtSound::eepromInitialized()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl6.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl6.wav"));
 }
 
 void GtSound::connectedToWiFi()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl7.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl7.wav"));
 }
 
 void GtSound::disconnectedFromServer()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl8.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl8.wav"));
 }
 
 void GtSound::connecting()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl9.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl9.wav"));
 }
 
 void GtSound::cardDetected()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl10.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl10.wav"));
 }
 
 void GtSound::invalidCard()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl11.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl11.wav"));
 }
 
 void GtSound::ok()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl12.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl12.wav"));
 }
 
 void GtSound::networkError()
 {
-    WAVFileReader *sampleSource = new WAVFileReader("/smpl13.wav");
-    output->startOrWait(sampleSource);
+    output->startOrWait(loadSound("/smpl13.wav"));
 }
