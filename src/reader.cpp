@@ -11,7 +11,9 @@ Timer<1, millis> reader_timer;
 uint8_t reset_cycles = 0;
 gt_mode_t current_mode = gt_tap_in;
 char last_error[50];
+
 uint32_t scan_counter;
+uint32_t scan_counter_ok;
 
 bool reader_reset(void *)
 {
@@ -78,6 +80,7 @@ void processReader()
       case ACTION_OK:
         bt_log("OK");
         gt_sound.ok();
+        scan_counter_ok++;
         break;
       case ERR_INVALID_UID:
         bt_log("INVALID CARD");

@@ -20,6 +20,8 @@ extern char ip_address[21];
 extern gt_mode_t current_mode;
 extern char last_error[50];
 extern uint32_t scan_counter;
+extern uint32_t scan_counter_ok;
+extern char gt_ssid[];
 
 void set_mode_tap_out();
 void set_mode_tap_in();

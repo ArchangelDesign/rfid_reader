@@ -137,7 +137,7 @@ const char* get_network_status_string() {
 }
 
 void process_network_async() {
-    if (watchdog_timer < 3) {
+    if (watchdog_timer < 3 && !really_connected) {
         watchdog_timer++;
         return;
     }

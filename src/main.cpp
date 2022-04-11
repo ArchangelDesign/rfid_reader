@@ -81,4 +81,5 @@ void loop() {
   processReader();
   process_network();
   bt_process();
+  gt_display.loop();
 }

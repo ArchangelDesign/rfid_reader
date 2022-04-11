@@ -22,6 +22,8 @@
 #define NET_STATUS_IDLE 0
 
 extern char gt_ssid[];
+extern bool really_connected;
+extern char ip_address[21];
 
 const char* get_network_status_string();
 uint8_t tap_in(byte uid[]);
