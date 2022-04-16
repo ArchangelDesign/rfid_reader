@@ -6,10 +6,7 @@
 
 class SampleSource;
 
-/**
- * Base Class for both the ADC and I2S sampler
- **/
-class DACOutput
+class I2SOutput
 {
 private:
     TaskHandle_t m_i2sWriterTaskHandle;
@@ -21,7 +18,7 @@ private:
 public:
     void startOrSkip(SampleSource *sample_generator);
     void startOrWait(SampleSource *sample_generator);
-    friend void dacWriterTask(void *param);
+    friend void i2sWriterTask(void *param);
     bool isBusy() { return m_busy; }
     void initialize();
     void shutdown();

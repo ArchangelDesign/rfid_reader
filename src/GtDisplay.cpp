@@ -47,7 +47,7 @@ void GtDisplay::drawGrid()
 
 void GtDisplay::drawSdInfo()
 {
-    tft.drawRoundRect(1, 175, 160, 64, 5, ST77XX_BLACK);
+    tft.drawRoundRect(1, 175, 140, 64, 5, ST77XX_BLACK);
     tft.setCursor(18, 180);
     tft.setTextColor(ST77XX_BLACK);
     tft.setTextSize(1);
@@ -63,24 +63,24 @@ void GtDisplay::drawSdInfo()
 
 void GtDisplay::drawWifiInfo()
 {
-    tft.drawRoundRect(168, 175, 150, 64, 5, ST77XX_BLACK);
-    tft.setCursor(178, 180);
+    tft.drawRoundRect(148, 175, 170, 64, 5, ST77XX_BLACK);
+    tft.setCursor(165, 180);
     tft.setTextColor(ST77XX_BLACK);
     setFontTitle();
-    tft.fillRect(171, 170, 50, 10, ST77XX_CYAN);
+    tft.fillRect(160, 170, 55, 10, ST77XX_CYAN);
     tft.print("WiFi");
-    tft.setCursor(175, 200);
+    tft.setCursor(160, 200);
     setFontRegular();
     tft.printf("%s", gt_ssid);
 }
 
 void GtDisplay::drawIpAddress()
 {
-    tft.setCursor(175, 225);
+    tft.setCursor(160, 225);
     setFontRegularBackgroundColor();
     tft.printf("%s", lastIpAddress);
     setFontRegular();
-    tft.setCursor(170, 225);
+    tft.setCursor(160, 225);
     lastIpAddress = ip_address;
     tft.printf("%s", lastIpAddress);
 }

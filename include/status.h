@@ -22,6 +22,7 @@ extern char last_error[50];
 extern uint32_t scan_counter;
 extern uint32_t scan_counter_ok;
 extern char gt_ssid[];
+extern bool is_system_busy;
 
 void set_mode_tap_out();
 void set_mode_tap_in();

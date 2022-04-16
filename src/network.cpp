@@ -35,7 +35,9 @@ bool network_status_callback(void *) {
             sprintf(ip_address, "%s", WiFi.localIP().toString().c_str());
             log_i("Connected to %s with IP address: %s", gt_ssid, ip_address);
             ever_connected = true;
-            gt_sound.connectedToWiFi();
+            // TODO: this runs in a separate task and requires SPI communication
+            // which is being used by RFID reader and display
+            // gt_sound.connectedToWiFi();
         }
     }
     if (!is_connected()) {
@@ -137,7 +139,7 @@ const char* get_network_status_string() {
 }
 
 void process_network_async() {
-    if (watchdog_timer < 3 && !really_connected) {
+    if (watchdog_timer < 3) {
         watchdog_timer++;
         return;
     }

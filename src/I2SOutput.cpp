@@ -6,13 +6,13 @@
 #include <FS.h>
 
 #include "SampleSource.h"
-#include "DACOutput.h"
+#include "I2SOutput.h"
 
 #define NUM_FRAMES_TO_SEND 256
 
-void dacWriterTask(void *param)
+void i2sWriterTask(void *param)
 {
-    DACOutput *output = (DACOutput *)param;
+    I2SOutput *output = (I2SOutput *)param;
     int availableBytes = 0;
     int buffer_position = 0;
     output->m_busy = true;
@@ -53,25 +53,38 @@ void dacWriterTask(void *param)
     digitalWrite(2, LOW);
     delay(100);
     delete output->m_sample_generator;
+    Serial.print("Max Stack size: ");
+    Serial.println(uxTaskGetStackHighWaterMark(NULL));
     output->m_busy = false;
     vTaskDelete(output->m_i2sWriterTaskHandle);
 }
 
-i2s_config_t DACOutput::get_config()
+i2s_config_t I2SOutput::get_config()
 {
     return {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_DAC_BUILT_IN),
+        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
         .sample_rate = AD_SAMPLE_RATE,
         .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
         .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT,
-        .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S_MSB),
-        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL3,
+        .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S),
+        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
         .dma_buf_count = 2,
         .dma_buf_len = 256
     };
 }
 
-void DACOutput::startOrWait(SampleSource *sample_generator)
+// void I2SOutput::startOrSkip(SampleSource *sample_generator)
+// {
+//     if (isBusy()) {
+//         return;
+//     }
+//     m_sample_generator = sample_generator;
+//     TaskHandle_t writerTaskHandle;
+//     // xTaskCreate(i2sWriterTask, "i2s Writer Task", 4096, this, 0, &writerTaskHandle);
+//     xTaskCreatePinnedToCore(i2sWriterTask, "i2s Writer Task", 3096, this, 0, &writerTaskHandle, 1);
+// }
+
+void I2SOutput::startOrWait(SampleSource *sample_generator)
 {
     #ifdef AD_DISABLE_SOUND
     return;
@@ -84,19 +97,24 @@ void DACOutput::startOrWait(SampleSource *sample_generator)
     
     delay(100);
     m_sample_generator = sample_generator;
-    xTaskCreate(dacWriterTask, "DAC Writer Task", 4096, this, 1, &m_i2sWriterTaskHandle);
+    xTaskCreate(i2sWriterTask, "i2s Writer Task", 3096, this, 1, &m_i2sWriterTaskHandle);
     // xTaskCreatePinnedToCore(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &m_i2sWriterTaskHandle, 0);
 }
 
-void DACOutput::initialize()
+void I2SOutput::initialize()
 {
     i2s_config_t i2sConfig = get_config();
     i2s_driver_install(I2S_NUM_0, &i2sConfig, 4, &m_i2sQueue);
-    i2s_set_dac_mode(I2S_DAC_CHANNEL_RIGHT_EN);
-    i2s_zero_dma_buffer(I2S_NUM_0);
+    static const i2s_pin_config_t pin_config = {
+        .bck_io_num = AD_I2S_BCLK,
+        .ws_io_num = AD_I2S_LRC,
+        .data_out_num = AD_I2S_DIN,
+        .data_in_num = I2S_PIN_NO_CHANGE
+    };
+    i2s_set_pin(I2S_NUM_0, &pin_config);
 }
 
-void DACOutput::shutdown()
+void I2SOutput::shutdown()
 {
     i2s_driver_uninstall(I2S_NUM_0);
 }

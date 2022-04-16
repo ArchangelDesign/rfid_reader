@@ -12,10 +12,6 @@
 
 #include "GtStorage.h"
 
-#define TFT_CS        33 // yellow
-#define TFT_RST       27 // brown
-#define TFT_DC        32 // blue
-
 class GtDisplay {
     public:
         GtDisplay(GtStorage *storage);

@@ -1,5 +1,5 @@
 #pragma once
-#include "DACOutput.h"
+#include "I2SOutput.h"
 #include "WAVFileReader.h"
 
 class GtSound {
@@ -22,7 +22,7 @@ class GtSound {
         void networkError();
         WAVFileReader* loadSound(const char* fname);
     private:
-        DACOutput *output;
+        I2SOutput *output;
 };
 
 extern GtSound gt_sound;

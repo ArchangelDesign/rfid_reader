@@ -1,7 +1,7 @@
 #include "GtSound.h"
 
 GtSound::GtSound() {
-    output = new DACOutput();
+    output = new I2SOutput();
 }
 
 WAVFileReader* GtSound::loadSound(const char* fname)

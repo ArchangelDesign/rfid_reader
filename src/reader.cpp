@@ -58,9 +58,10 @@ void bt_log(const char * buf) {
 void processReader()
 {
     reader_timer.tick();
-    if (!newCardDetected()) {
+    if (!newCardDetected() || is_system_busy) {
         return;
     }
+    is_system_busy = true;
     memcpy(cardId, mfrc522.uid.uidByte, 4);
     reset_cycles = 0;
     Serial.printf("Card ID: %x:%x:%x:%x\n", cardId[0], cardId[1], cardId[2], cardId[3]);
@@ -69,6 +70,7 @@ void processReader()
     sprintf(last_error, "%s", "BUSY");
     bt_log((const char*)buf);
     gt_sound.cardDetected();
+    delay(1000);
     uint8_t result = 90;
     if (current_mode == gt_tap_in) {
       result = tap_in(cardId);
@@ -111,6 +113,8 @@ void processReader()
     scan_counter++;
     Serial.printf("SCANS: %d\n", scan_counter);
     gt_mem_set_cntr(scan_counter);
+    sleep(2);
+    is_system_busy = false;
 }
 
 void set_mode_tap_in() {

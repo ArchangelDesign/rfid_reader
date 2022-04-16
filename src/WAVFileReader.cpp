@@ -90,8 +90,7 @@ size_t WAVFileReader::getFrames(Frame_t *frames, int number_frames)
         {
             m_file.read((uint8_t *)(&right), sizeof(int16_t));
         }
-        // we need unsigned bytes for the ADC
-        frames[i].left = left + 32768;
+        frames[i].left = left;// + 32768;
         // using PCM 16 bit mono
         // frames[i].right = right + 32768;
         frames_read++;

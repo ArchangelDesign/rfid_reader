@@ -9,8 +9,6 @@
 #include "ADBuzzer.h"
 #include "GtDisplay.h"
 #include "GtStorage.h"
-#include "DACOutput.h"
-#include "WAVFileReader.h"
 // #include "SinWaveGenerator.h"
 #include "GtSound.h"
 
@@ -21,6 +19,7 @@ GtStorage gt_storage = GtStorage();
 GtDisplay gt_display = GtDisplay(&gt_storage);
 GtSound gt_sound = GtSound();
 bool reported_ready = false;
+bool is_system_busy = true;
 
 // c1 = 8717 2/6/22
 // c2 = 21034 2/7/22   12317 scans
@@ -57,14 +56,17 @@ void setup() {
   log_d("initializing reader...");
   sleep(1);
   initializeReader();
-  gt_sound.readerInitialized();
+  sleep(1);
+  // gt_sound.readerInitialized();
+  // sleep(3);
   log_d("initializing screen...");
   gt_display.begin();
   sleep(1);
   log_d("initializing bluetooth...");
   initialize_blueetooth();
-  gt_sound.bluetoothReady();
-  sleep(1);
+  sleep(2);
+  // gt_sound.bluetoothReady();
+  sleep(3);
   
   log_d("initialization done.");
 }
@@ -72,11 +74,9 @@ void setup() {
 void loop() {
   if (really_connected && !reported_ready) {
     gt_sound.systemReady();
-    reported_ready = true;
-  }
-  if (!really_connected) {
-    gt_sound.connecting();
     sleep(3);
+    is_system_busy = false;
+    reported_ready = true;
   }
   processReader();
   process_network();
