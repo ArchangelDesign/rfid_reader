@@ -1,10 +1,11 @@
 #pragma once
 #include "I2SOutput.h"
 #include "WAVFileReader.h"
+#include "GtStorage.h"
 
 class GtSound {
     public:
-        GtSound();
+        GtSound(GtStorage *gt_storage);
         void systemStarting();
         void networkReady();
         void bluetoothReady();
@@ -23,6 +24,7 @@ class GtSound {
         WAVFileReader* loadSound(const char* fname);
     private:
         I2SOutput *output;
+        GtStorage *storage;
 };
 
 extern GtSound gt_sound;

@@ -17,7 +17,7 @@ ADBuzzer ad_buzzer;
 bool buzzer_process_running = true;
 GtStorage gt_storage = GtStorage();
 GtDisplay gt_display = GtDisplay(&gt_storage);
-GtSound gt_sound = GtSound();
+GtSound gt_sound = GtSound(&gt_storage);
 bool reported_ready = false;
 bool is_system_busy = true;
 

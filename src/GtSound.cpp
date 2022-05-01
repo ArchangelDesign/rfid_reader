@@ -1,7 +1,8 @@
 #include "GtSound.h"
 
-GtSound::GtSound() {
+GtSound::GtSound(GtStorage *gt_storage) {
     output = new I2SOutput();
+    storage = gt_storage;
 }
 
 WAVFileReader* GtSound::loadSound(const char* fname)
@@ -9,7 +10,7 @@ WAVFileReader* GtSound::loadSound(const char* fname)
     #ifdef AD_DISABLE_SOUND
     return NULL;
     #endif
-    return new WAVFileReader(fname);
+    return new WAVFileReader(fname, storage);
 }
 
 void GtSound::systemStarting()

@@ -1,6 +1,7 @@
 #include <SD.h>
 #include <FS.h>
 #include "WAVFileReader.h"
+#include "GtStorage.h"
 
 #pragma pack(push, 1)
 typedef struct
@@ -27,14 +28,14 @@ typedef struct
 } wav_header_t;
 #pragma pack(pop)
 
-WAVFileReader::WAVFileReader(const char *file_name)
+WAVFileReader::WAVFileReader(const char *file_name, GtStorage *storage)
 {
-    if (!SD.exists(file_name))
+    if (!storage->exists(file_name))
     {
         Serial.println("****** Failed to open file! Have you uploaed the file system?");
         return;
     }
-    m_file = SD.open(file_name, "r");
+    m_file = storage->openForReading(file_name);
     // read the WAV header
     wav_header_t wav_header;
     m_file.read((uint8_t *)&wav_header, sizeof(wav_header_t));
