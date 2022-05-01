@@ -2,6 +2,9 @@
 #include "status.h"
 #include "storage.h"
 #include "GtSound.h"
+#include "GtStorage.h"
+
+extern GtStorage gt_storage;
 
 MFRC522::MIFARE_Key key = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 MFRC522::StatusCode status;
@@ -57,10 +60,15 @@ void bt_log(const char * buf) {
 
 void processReader()
 {
+    if (is_system_busy) {
+      Serial.println("SYSTEM IS BUSY");
+      return;
+    }
     reader_timer.tick();
-    if (!newCardDetected() || is_system_busy) {
+    if (!newCardDetected()) {
         return;
     }
+
     is_system_busy = true;
     memcpy(cardId, mfrc522.uid.uidByte, 4);
     reset_cycles = 0;
@@ -113,7 +121,7 @@ void processReader()
     scan_counter++;
     Serial.printf("SCANS: %d\n", scan_counter);
     gt_mem_set_cntr(scan_counter);
-    sleep(2);
+    sleep(3);
     is_system_busy = false;
 }
 

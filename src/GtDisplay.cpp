@@ -1,6 +1,8 @@
 #include "GtDisplay.h"
 #include "status.h"
 
+extern GtStorage gt_storage;
+
 GtDisplay::GtDisplay(GtStorage *storeage) {
     memset(buffer, 0, 30);
     this->storage = storage;
@@ -21,6 +23,10 @@ void GtDisplay::paint() {
 }
 
 void GtDisplay::loop() {
+    if (gt_storage.isBusy()) {
+        Serial.println("STORAGE IS BUSY");
+        return;
+    }
     if (strcmp(lastIpAddress, ip_address) != 0) {
         drawIpAddress();
     }

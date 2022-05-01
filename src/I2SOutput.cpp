@@ -7,6 +7,7 @@
 
 #include "SampleSource.h"
 #include "I2SOutput.h"
+#include "status.h"
 
 #define NUM_FRAMES_TO_SEND 256
 
@@ -32,9 +33,14 @@ void i2sWriterTask(void *param)
                 {
                     if (availableBytes == 0)
                     {
+                        try {
                         availableBytes = output->m_sample_generator->getFrames(frames, NUM_FRAMES_TO_SEND);
                         availableBytes *= sizeof(Frame_t);
                         buffer_position = 0;
+                        } catch (std::exception e) {
+                            log_e("read error");
+                            goto skip;
+                        }
                     }
                     // do we have something to write?
                     if (availableBytes > 0)
@@ -49,13 +55,14 @@ void i2sWriterTask(void *param)
             }
         }
     }
-    log_d("playback done.");
+    skip:
     digitalWrite(2, LOW);
     delay(100);
     delete output->m_sample_generator;
     Serial.print("Max Stack size: ");
     Serial.println(uxTaskGetStackHighWaterMark(NULL));
     output->m_busy = false;
+    is_system_busy = false;
     vTaskDelete(output->m_i2sWriterTaskHandle);
 }
 
@@ -97,8 +104,8 @@ void I2SOutput::startOrWait(SampleSource *sample_generator)
     
     delay(100);
     m_sample_generator = sample_generator;
+    is_system_busy = true;
     xTaskCreate(i2sWriterTask, "i2s Writer Task", 3096, this, 1, &m_i2sWriterTaskHandle);
-    // xTaskCreatePinnedToCore(i2sWriterTask, "i2s Writer Task", 4096, this, 1, &m_i2sWriterTaskHandle, 0);
 }
 
 void I2SOutput::initialize()

@@ -19,6 +19,11 @@ class GtStorage {
         void openRoot();
         bool writeInfo(const char *info);
         void end();
+        bool isBusy();
+        bool exists(const char* path);
+        fs::File openForReading(const char *path);
+        size_t read(fs::File handle, uint8_t *buf, size_t size);
+        uint16_t available(fs::File handle);
     private:
     #ifdef AD_AVR
         Sd2Card card;

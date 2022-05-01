@@ -20,6 +20,23 @@ void GtStorage::end() {
     SD.end();
 }
 
+bool GtStorage::exists(const char* path) {
+    return SD.exists(path);
+}
+
+fs::File GtStorage::openForReading(const char *path) {
+    return SD.open(path, "r");
+}
+
+size_t GtStorage::read(fs::File handle, uint8_t *buf, size_t size)
+{
+    return handle.read(buf, size);
+}
+
+uint16_t GtStorage::available(fs::File handle) {
+    return handle.available();
+}
+
 bool GtStorage::initialize() {
     if (!SD.begin(chipSelectPin)) {
         Serial.println("cannot mount.");
@@ -101,4 +118,13 @@ bool GtStorage::writeInfo(const char* info) {
     return success;
     #endif
     return false;
+}
+
+bool GtStorage::isBusy()
+{
+    pinMode(AD_SD_CS, INPUT);
+    bool busy = digitalRead(AD_SD_CS) == LOW;
+    pinMode(AD_SD_CS, OUTPUT);
+
+    return busy;
 }
