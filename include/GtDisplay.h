@@ -11,6 +11,7 @@
 #include <Fonts/FreeMonoBold24pt7b.h>
 
 #include "GtStorage.h"
+#include "status.h"
 
 class GtDisplay {
     public:

@@ -36,6 +36,7 @@ void GtDisplay::loop() {
     }
     if (lastMode != current_mode) {
         drawStatus();
+        lastMode = current_mode;
     }
 }
 
