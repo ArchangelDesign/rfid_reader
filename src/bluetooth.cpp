@@ -110,5 +110,10 @@ void gt_bt_command_received() {
         ESP.restart();
         return;
     }
+    if (strcmp(bt_buffer, "status") == 0) {
+        SerialBT.write((uint8_t*)"memory: ", 8);
+        SerialBT.write(esp_get_free_heap_size());
+        return;
+    }
     SerialBT.write((uint8_t*)"ACK", 3);
 }

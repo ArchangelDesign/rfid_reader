@@ -37,22 +37,22 @@ void setup() {
   #else
   log_d("sound disabled");
   #endif
-  gt_sound.initialize();
-  log_d("sound initialized.");
-  sleep(1);
-  gt_sound.systemStarting();
-  sleep(2);
+  // gt_sound.initialize();
+  // log_d("sound initialized.");
+  // sleep(1);
+  // gt_sound.systemStarting();
+  // sleep(2);
   initialize_eeprom();
-  gt_sound.eepromInitialized();
-  sleep(3);
-  gt_sound.shutdown();
+  // gt_sound.eepromInitialized();
+  // sleep(3);
+  // gt_sound.shutdown();
   sleep(1);
   log_d("initializing network...");
   initialize_network();
   sleep(4);
   gt_sound.initialize();
-  delay(300);
-  gt_sound.networkReady();
+  // delay(1000);
+  // gt_sound.networkReady();
   log_d("initializing reader...");
   sleep(1);
   initializeReader();

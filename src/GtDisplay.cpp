@@ -16,6 +16,7 @@ void GtDisplay::begin() {
     clear();
     drawGrid();
     paint();
+    lastMode = current_mode;
 }
 
 void GtDisplay::paint() {
@@ -32,6 +33,9 @@ void GtDisplay::loop() {
     }
     if (scan_counter > lastScanCount) {
         drawScanCounter();
+    }
+    if (lastMode != current_mode) {
+        drawStatus();
     }
 }
 
@@ -160,5 +164,13 @@ void GtDisplay::drawStatus()
     tft.fillRect(0, 60, 320, 80, ST77XX_GREEN);
     tft.setCursor(10, 110);
     tft.setFont(&FreeMonoBold24pt7b);
-    tft.print("READY");
+    switch (current_mode) {
+        case gt_tap_in:
+            tft.print("TAP IN");
+            break;
+        case gt_tap_out:
+            tft.print("TAP OUT");
+            break;
+    }
+
 }

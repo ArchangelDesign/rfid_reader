@@ -41,4 +41,5 @@ class GtDisplay {
         GtStorage *storage;
         char* lastIpAddress = "";
         uint32_t lastScanCount = 0;
+        gt_mode_t lastMode;
 };
